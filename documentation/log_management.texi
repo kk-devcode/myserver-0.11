@@ -1,0 +1,140 @@
+@c -*-texinfo-*-
+@c GNU MyServer
+@c
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+@c 2011 Free Software Foundation, Inc.
+@c
+@c This program is free software; you can redistribute it and/or modify
+@c it under the terms of the GNU General Public License as published by
+@c the Free Software Foundation; either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c This program is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+@section Overview of the log management features
+The MyServer's log management system was designed to support logging
+over different targets. At the moment, these targets are made out of
+files, sockets and, of course, consoles. Each target, must be referred
+through its @b{location string}. In addition, it is possible to provide
+a list of filters (e.g. the Gzip filter) to improve the logging
+capabilities.
+
+@section Use of the log manager
+This section will introduce you to the use of the log management
+features.
+
+@subsection Location strings
+A location string can be provided as an URI; the basic schema is in
+the form @code{protocol://resource}. @code{protocol} can be chosen
+between
+@enumerate
+@item @code{console}
+@item @code{file}
+@item @code{socket}
+@end enumerate
+and @code{resource} can be either a valid filename or an hostname according
+to its @code{protocol}. The @code{console} protocol, can take as its
+@code{resource} argument, either @code{stdout} or @code{stderr}.
+
+@subsubsection Location string examples
+@enumerate
+@item Send log messages to a host whose ip address is 192.168.1.18, on
+port 12345 :
+@example
+socket://192.168.1.18:12345
+@end example
+@item Send log messages to the file /var/log/myserver/MyServerHTTP.log :
+@example
+file:///var/log/myserver/MyServerHTTP.log
+@end example
+Note the extra '/' needed to refer an absolute path.
+@item Send log messages to the standard error
+@example
+console://stderr
+@end example
+@end enumerate
+
+@subsection Setting the MyServer's main log
+You can set the MyServer's main log location through the switch
+@example
+--loglocation=protocol://resource
+@end example
+where the @code{--loglocation} argument is a valid location string.
+
+@subsection Setting the logging resources for virtual hosts
+Each virtual host needs two main log targets, one for the access
+messages and the other one for the error messages, whose entries in the
+configuration file, are respectively @code{ACCESSLOG} and
+@code{WARNINGLOG}. Each of these  targets, can in turn write its
+messages over different streams. To tell MyServer about all that, you
+can edit the @file{virtualhosts.xml} file, and apply the information
+found in this section, to each @code{VHOST} entry of that file. As we
+can see in the following example, the @code{ACCESSLOG} root entry for
+the accesses log configuration, contains some @code{STREAM} nodes, and
+each @code{STREAM} contains two attributes, the mandatory
+@code{location} and the optional @code{cycle}. A @code{STREAM} node, can
+also contain optional @code{FILTER} sub-nodes, one for each filter that
+we want to add to the @code{STREAM}.
+@example
+<ACCESSLOG type="combined">
+  <STREAM location="file://logs/MyServerHTTP.log" cycle="1048576">
+    <FILTER>gzip</FILTER>
+  </STREAM>
+  <STREAM location="console://stderr"/>
+</ACCESSLOG>
+@end example
+Above we have two streams attached to the @code{ACCESSLOG} entry. The
+first one, is a file. This file will grow up to 1048576 bytes, over that
+limit it will be cycled. Also, this target will take advantage of the
+gzip compression, since it will write to the file through the gzip
+filter. The second one is the standard error stream over the console.
+The next example, shows instead the @code{WARNINGLOG} entry. In that
+example, we still have two streams where warning messages will be
+sent. The first one is a socket, while the second one is a file that
+will grow with no limit over its size. No filters will be applied to
+that stream. Note that if we don't specify the @code{cycle} attribute,
+it is assumed to be zero by default, which means to never cycle the
+@code{STREAM}.
+@example
+<WARNINGLOG>
+  <STREAM location="socket://192.168.1.13:8080"/>
+  <STREAM location="file://MyServerHTTP.err"/>
+</WARNINGLOG>
+@end example
+If a wrong filter is specified, its relative @code{STREAM} will not
+be added.
+
+@subsection Console colors
+It is possible to set color attributes for the text written over the
+console. In this way, messages can look different according to the
+logging level which they belong to.
+For example, you may wish to write error messages with a red text over a
+black background, info messages with a white text over a black
+background and warning messages with a yellow text over a black
+background. You can easily tell MyServer about that information by
+editing the @file{myserver.xml} configuration file and adding the
+following code:
+@example
+  <DEFINE name="log_color.info_fg" value="white">
+  <DEFINE name="log_color.info_bg" value="black">
+
+  <DEFINE name="log_color.warning_fg" value="yellow">
+  <DEFINE name="log_color.warning_bg" value="black">
+
+  <DEFINE name="log_color.error_fg" value="red">
+  <DEFINE name="log_color.error_bg" value="black">
+@end example
+Allowed values for colors are @code{black}, @code{red}, @code{green},
+@code{yellow}, @code{blue}, @code{magenta}, @code{cyan} and
+@code{white}. The two common suffixes @code{fg} and @code{bg} represent
+respectively the foreground attribute and the background one, while the
+three prefixes, @code{info}, @code{warning} and @code{error} represent
+kinds of logging messages managed by MyServer.
+If the console colours information is missing or it is partially
+provided, MyServer will use default values.

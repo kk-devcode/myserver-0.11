@@ -1,0 +1,277 @@
+@c -*-texinfo-*-
+@c GNU MyServer
+@c
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+@c 2011 Free Software Foundation, Inc.
+@c
+@c This program is free software; you can redistribute it and/or modify
+@c it under the terms of the GNU General Public License as published by
+@c the Free Software Foundation; either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c This program is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with this program.  If not, see <http://www.gnu.org/licenses/>.
+It is possible to change almost any configuration for a single
+directory or a single resource trough the @file{.security.xml}.
+This file can be placed in any web directory and it will overwrite
+default configuration values.  If the @file{.security.xml} file is not
+found in the directory where the requested resource is, then MyServer
+will look in the parents directory until the file is found.
+If @file{.security.xml} is not present in the virtual host root
+directory then the default one which is present in the system
+directory will be used.
+
+Usually consider the first valid value found in this order:
+@enumerate
+@item Local @file{.security.xml}.
+@item Parent directories @file{.security.xml}.
+@item System vhost directory @file{.security.xml}.
+@item MIME type configuration @file{MIMEtypes.xml}.
+@item Virtual host configuration.
+@item Global server configuration.
+@end enumerate
+
+Some values are not configurable in any @file{.security.xml} file and
+they are took directly from the Virtual host configuration and in some
+cases directly from the global configuration file.
+
+In MyServer there are two different steps involved in the logging
+phase: user authentication and validation.
+
+In the first step a permission mask is found given the
+username:password pair, no other information are used in this phase.
+In the second phase this value is refined using more information.
+The two phases are completely separated and it is possible to use
+different sources for any of them.
+
+The @file{.security.xml} can be used for both phases and by default it
+is.
+
+The anonymous user is matched inside MyServer with the ``Guest''
+username and an empty password.
+
+The name for the security file can be changed trought the
+@code{security.filename} variable.
+The maximum allowed size for a security file can be limited by the
+@code{security.max_size} variable, by default there is no limit.
+Both @code{security.filename} and @code{security.max_size} can be
+defined in the global configuration file or differently for every
+virtual host.
+
+@section Security file user authentication
+The information used for the first phase of logging is a simple list
+of USER elements.  Any permission is configured by an attribute, if
+the attribute value is equal to ``YES'' then the permission is granted.
+
+The permissions that MyServer considers are:
+@enumerate
+@item READ
+@item EXECUTE
+@item BROWSE
+@item WRITE
+@item DELETE
+@end enumerate
+
+In the following example we enable an anonymous user to access
+resources in READ/EXECUTE/BROWSE mode, DELETE and WRITE are both
+denied.
+
+@example
+<SECURITY>
+  <USER name="Guest" password="" READ="YES" EXECUTE="YES" BROWSE="YES"
+     DELETE="NO" WRITE="NO"/>
+</SECURITY>
+@end example
+
+As no other information beside username:password is used, this first
+phase is the same for any protocol supported by MyServer.
+
+To improve security it is possible to use in place of the clear-text
+password a crypted version of it.  It is done using the
+@code{algorithm} variable.  It specifies the function F to apply to
+the client specified password before compare it with the
+@code{password} value.
+
+@example
+<SECURITY>
+  <USER name="admin" password="8ee0f7b66d1ab05714573fc556fbd7ff"
+               algorithm="md5" READ="YES" EXECUTE="YES"
+               BROWSE="YES" DELETE="NO" WRITE="NO"/>
+</SECURITY>
+@end example
+
+@subsubsection Http Digest
+If the HTTP digest authorization scheme is used, it is not possible to
+use any password hash but the original clear-text password.  The only
+exception to this rule is to specify the A1 part in the Digest
+scheme.
+
+It is computed by the function: MD5 (username:realm:password).
+
+@example
+  <DEFINE name="http.auth" value="digest" />
+  <USER name="user" algorithm="a1" password="c2deada0bcb64f99e65be0d33bb92d54"
+        READ="YES" EXECUTE="YES" BROWSE="YES" WRITE="NO"/>
+@end example
+
+The realm value used by MyServer is the virtual host name, including
+the port number, i.e. @code{localhost:8080}.
+The A1 password can be computed using the following shell command, be
+sure to use the right user, realm and password values.
+
+@example
+  printf "%s:%s:%s" user realm password | md5sum
+@end example
+
+@subsection FTP Anonymous user
+To allow the @file{.security.xml} re-use, the FTP ``Anonymous'' user
+is mapped internally by MyServer to the ``Guest'' user.
+
+@section Validation phase
+The second phase allows to define some rules that can overload the
+settings specified in the authorization phase.
+
+The default validator used by MyServer is the @file{.security.xml}
+file.
+
+@subsection XML Validation file
+The XML validation phase reads the tag contained in the order that
+they are specified.  It works almost in the same way a programming
+language does, but differently the XML validator doesn't allow a loop
+structure, this is required to terminate the parsing in a finite
+time.
+
+The XML validation is done using four commands: 
+
+@enumerate
+@item CONDITION
+It defines a block that is evaluated only when the specified condition
+is true.
+@item DEFINE
+It defines a new value for a variable that can be used later by the server.
+@item PERMISSION
+Redefine the permission found in the authorization phase.
+@item RETURN
+Immediately return from the validation.
+@end enumerate
+
+@subsubsection CONDITION element
+The @code{CONDITION} block allows to evaluate a condition and in case
+it is satisfied then the inner XML is evaluated too, in case it is not
+satisfied then the inner code is not considered.  It works like the
+@code{if} statement usually present in any programming language but
+offering less syntactical freedom.
+
+Here it is showed a simple use of @code{CONDITION}:
+@example
+<CONDITION name="auth.user" value="Guest">
+...
+</CONDITION>
+@end example
+
+The inner XML code, omitted for clarity, is evaluated only when the
+@code{auth.user} variable is equals to the value "Guest".
+
+
+It may be necessary to specify the other case, evaluate the inner
+block every time the condition is not satisfied.  It is done using the
+@code{not} attribute:
+
+@example
+<CONDITION name="auth.user" value="Guest" not="yes">
+...
+</CONDITION>
+@end example
+
+In this case, the inner block is evaluated every time the
+@code{auth.user} is different than "Guest".
+
+It is possible to match a value against a regular expression, in this
+case you will need to declare it explicitly.
+
+@example
+<CONDITION name="auth.user" value="admin.*" regex="yes" not="yes">
+...
+</CONDITION>
+@end example
+
+
+@subsubsection DEFINE element
+The @code{DEFINE} block is used to specify a value for a variable that
+later can be accessed by the server.
+This is the way to specify variables that it is possible to specify in
+the security file (not all variables are allowed to be defined here),
+overloading the value specified in the virtual host or in the server
+global configuration.
+The syntax for the @code{DEFINE} command is:
+@example
+<DEFINE name="http.error.file.404" value="404.html"/>
+@end example
+
+In the previous example the HTTP 404 error page was replaced with a
+customized HTML page.
+
+As the same configuration file can be used by different contexts, as
+a web host or a FTP site, any variable has meaning only in its
+original environment, define @code{http.error.file.404} in a FTP site
+will not have any effect.
+
+@subsubsection PERMISSION element
+The @code{PERMISSION} element has the same syntax used in the first
+authorization phase, the only difference is that username and password
+are not specified.
+
+@example
+<PERMISSION READ="NO" EXECUTE="NO" BROWSE="NO" DELETE="NO" WRITE="NO">
+@end example
+
+The previous example denies any access to the resource, replacing any
+value found previously.
+
+@subsubsection RETURN element
+The @code{RETURN} element allows to exit immediately from the XML flow
+without consider any other command specified in the file.
+
+It has an additional attribute @code{value} that must be set to the
+value @code{ALLOW} to keep the previous found attribute mask.
+
+To immediately return from the XML file and at the same time deny any
+access, without care of the previous found permission mask, you must
+do:
+@example
+<RETURN value="DENY" />
+@end example
+
+Differently, to return from the flow keeping the found permission mask
+there is need to do like:
+@example
+<RETURN value="ALLOW" />
+@end example
+
+Pay attention, if at the same time you want to change the permissions
+then you will need to specify them explicitly by the @code{PERMISSION}
+command.
+
+@subsubsection SET_HEADER
+The @code{SET_HEADER} directive specifies a value to be used for the
+response header, for protocols supporting it.
+
+This directive, for HTTP/HTTPS, overwrites default values for the
+response header, anything specified at this stage of the pipeline can be
+modified later by web applications, such as CGIs.
+
+For example, it is possible to specify a directive for caching using
+something like:
+
+@example
+<SET_HEADER name="Cache-Control" value="no-store" />
+@end example
+
+The server doesn't check how these values are changed and if they can
+cause problems in the protocol flow, it is your responsibility to use
+safe values.

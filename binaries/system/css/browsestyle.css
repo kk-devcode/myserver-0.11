@@ -1,0 +1,59 @@
+h1 
+{
+  font-size:32; 
+  font-family: Arial; 
+  color: #666699; 
+  text-align: center;
+}
+
+body 
+{
+  font-size:12; 
+  font-family: Arial; 
+  color: #666699; 
+  background-color: #ffffff;
+}
+
+address 
+{
+  font-size:10; 
+  font-family: Arial; 
+  color: #000000; 
+  text-align:right;
+}
+
+th
+{
+  text-align: left;
+  font-weight: bold;
+}
+
+td
+{
+  align: left;
+}
+
+hr 
+{
+  background-color: #666699; 
+  color: #66699; 
+  border: 0px; 
+  height: 1px;
+}
+
+a 
+{
+  color: #666699; 
+  text-decoration: none;
+}
+
+a:hover 
+{
+  color: #ff0000;
+}
+
+a:visited 
+{
+  color: #353555;
+}
+

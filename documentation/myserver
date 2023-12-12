@@ -1,0 +1,1713 @@
+This is myserver, produced by makeinfo version 4.13 from
+./myserver.texi.
+
+This is the manual for GNU MyServer.
+
+   Copyright (C) 2008 Free Software Foundation, Inc.
+
+     Permission is granted to copy, distribute and/or modify this
+     document under the terms of the GNU Free Documentation License,
+     Version 1.2 or any later version published by the Free Software
+     Foundation; with the Invariant Sections being "The GNU Manifesto,"
+     "Distribution" and "GNU GENERAL PUBLIC LICENSE," with the
+     Front-Cover texts being "A GNU Manual," and with the Back-Cover
+     Texts as in (a) below.  A copy of the license is included in the
+     section entitled "GNU Free Documentation License."
+
+     (a) The FSF's Back-Cover Text is: "You have the freedom to copy and
+     modify this GNU manual.  Buying copies from the FSF supports it in
+     developing GNU and promoting software freedom."
+
+INFO-DIR-SECTION MyServer
+START-INFO-DIR-ENTRY
+* MyServer: (myserver).	GNU MyServer.
+END-INFO-DIR-ENTRY
+
+
+File: myserver,  Node: Top,  Next: Basic configuration,  Prev: (dir),  Up: (dir)
+
+GNU MyServer
+************
+
+GNU MyServer is a powerful web server designed, to be easily executed
+on a personal computer by the average computer user.  It is based on
+multi-threaded architecture, which makes it extremely scalable and
+usable in large scale sites, as well as in small networks.  It has
+built-in supports for the HTTP, HTTPS and FTP protocols.  Support for
+dynamic pages is made available trough CGI, ISAPI, WinCGI, SCGI and
+FastCGI protocols.
+
+* Menu:
+
+* Basic configuration:: Basic server configuration.
+* Virtual hosts:: Virtual hosts configuration.
+* MIME types:: MIME types configuration.
+* Process security:: Process security.
+* Security files:: Describe how to use security files.
+* WebDAV:: Information on using WebDAV commands.
+* SSL certificates:: Show how to use SSL certificates.
+* Error pages:: How configure error pages.
+* Directory listing:: Show how directories are handled.
+* Log management:: Describe how to use the log management features.
+* Concept index:: An item for each concept.
+* GNU Free Documentation License:: The license for this documentation.
+
+
+File: myserver,  Node: Basic configuration,  Next: Virtual hosts,  Prev: Top,  Up: Top
+
+1 Basic configuration
+*********************
+
+1.1 Configuration files
+=======================
+
+The MyServer configuration is done using three different XML files:
+
+   * `myserver.xml' It contains the main myserver configuration.
+     Almost all settings here can be redefined locally for virtual
+     hosts or directories.
+
+   * `MIMEtypes.xml' It contains the default MIME types configuration.
+     It can be redefined for any virtual host.
+
+   * `virtualhosts.xml' This file defines the different virtual hosts
+     used by MyServer.  Virtual host here is not used properly, as this
+     file is used to define sites on a protocol different than
+     HTTP/HTTPS where there are not virtual hosts, for example FTP.
+
+   These files can exist in different locations, they are looked in the
+following order:
+  1. Current working directory.
+
+  2. Personal directory, ~/.myserver/.
+
+  3. Global scope inside /etc/myserver.
+
+   It is possible to specify a different directory where looks for
+configuration files by the `--cfgdir' argument to the myserver process.
+In case a path is specified, then the configuration files are looked
+exclusively in this directory.
+
+1.1.1 Alternative handlers
+--------------------------
+
+Plugins are allowed to install new handlers to read the configuration
+from other sources.  It is done changing the value of the variables
+`server.vhost_handler' and `server.server.mime_handler', respectively
+to use a different handler for the virtual hosts and for the MIME
+types.  If no value is specified then the value `xml' is used.
+
+1.2 Server administrator
+========================
+
+CGI scripts can get the server administrator e-mail and show them to
+the user (through the SERVER_ADMIN environment variable).  It is
+defined trought the `server.admin' variable, that can be set in the
+global configuration file or for virtual host.
+
+1.3 Temporary files position
+============================
+
+There can be need for the server to save temporary files as a form of
+inter-process communication.  It is possible to configure the directory
+where temporary files are stored trought the `server.temp_directory'
+variable inside the main configuration file.  Operations on disk are
+much slower than read or write directly from the primary memory.  To
+solve this problem under GNU/Linux you can think about use virtual
+memory instead of a persistent storage device to store files.
+
+   It can be done, by the root user, as:
+
+     # mount -t tmpfs -o size=256m tmpfs /tmp/tmpfs
+
+   The previous command mount a portion of memory, 256M, on the
+/tmp/tmpfs and it can be used as a normal file system.  At this point,
+`server.temp_directory' shall be set to `/tmp/tmpfs' to benefit from it.
+Files saved on the primary memory are not persistent between reboots,
+introducing another level of security as temporary data will not be
+saved on the server.
+
+1.4 Connections timeout
+=======================
+
+Protocols like FTP or HTTP/1.1 support keep-alive connections, in other
+words the connection is kept alive between requests to avoid a
+different connection to the server on every request.  MyServer
+performances are not affected by the number of active connections but
+if they are not controlled, they can reach the maximum number of
+allowed connections without give the possibility to new connections
+that really want to request a resource to be estabilished.  Active
+connections are closed after a fixed amount of time has passed without
+any activity.  The amount of time, before an inactive connection is
+closed, is configured trought the `server.connection_timeout' value
+defined in the global configuration file.  This value is specified in
+seconds.
+
+
+File: myserver,  Node: Virtual hosts,  Next: MIME types,  Prev: Basic configuration,  Up: Top
+
+2 Virtual hosts
+***************
+
+Virtual hosts is a method to link more than a domain name to the same
+machine, even if they refer to the same network interface.  Virtual
+hosts are supported by the HTTP and HTTPS protocols.
+
+   For example http://mypc.net is different from http://sub.mypc.net.
+Virtual hosts are defined in the file `virtualhosts.xml'.  A sample
+virtual hosts configuration file looks like:
+
+     <VHOSTS>
+       <VHOST>
+         <NAME>Every connection</NAME>
+         <PORT>80</PORT>
+         <IP>192.168.0.0/24</IP>
+         <PROTOCOL>HTTP</PROTOCOL>
+         <DOCROOT>web</DOCROOT>
+         <SYSROOT>system</SYSROOT>
+         <HOST>foo.bar.com</HOST>
+         <ACCESSLOG>
+           <STREAM location="file://logs/myServer.log" cycle="1048576"/>
+     	  </ACCESSLOG>
+         <WARNINGLOG>
+           <STREAM location="file://logs/myServer.err" cycle="1048576"/>
+         </WARNINGLOG>
+         <ALLOW_CGI>NO</ALLOW_CGI>
+       </VHOST>
+     </VHOSTS>
+
+   * <NAME> it gives the server administrator an idea of what the
+     virtual host specifying a name for it.
+
+   * <PORT> it is the port used to accept connections.
+
+   * <IP> it is optional.  It defines a CIDR subnet mask in the format
+     A.B.C.D/E or defining the first and the last IP address in the
+     range as A.B.C.D-E.F.G.H.  Multiple masks can be defined for the
+     same virtual host.
+
+   * <PROTOCOL> it is the protocol used by the host.
+
+   * <DOCROOT> it is the directory where the files are found.
+
+   * <SYSROOT> it is the system directory.
+
+   * <HOST> it is your virtual host's name. The optional useRegex="YES"
+     means the address would act as a regular expression, not only a
+     fixed value.  Multiple host names can be defined for the same
+     virtual host.
+
+   * <ACCESSLOG> it is a list of streams where log accesses to the
+     virtual host.
+
+   * <WARNINGLOG> it is a list of streams where log warning and error
+     messages for the virtual host.
+
+   Log files can have extra options:
+
+     <ACCESSLOG type="combined">logs/myServerHTTP.log</ACCESSLOG>
+
+   With this option, the logs will have two extra fields: HTTP Referrer
+and HTTP User Agent.  Using cycle="yes" you will enable log cycler on
+the log file. When a log file with cycling enabled reaches the max size
+for log files it will write its content to a new file and recreate the
+original file. By default cycled log files uses the gzip compression to
+save space, if you don't want to use gzip specify cycle_gzip="no".
+Here is an example of a FTP virtual host:
+
+     <VHOSTS>
+       <VHOST>
+         <NAME>Ftp connection</NAME>
+         <PORT>21</PORT>
+         <IP>127.0.0.1/32</IP>
+         <PROTOCOL>FTP</PROTOCOL>
+         <DOCROOT>web</DOCROOT>
+         <SYSROOT>system</SYSROOT>
+         <HOST>ftp.foo.bar.com</HOST>
+         <ACCESSLOG>
+           <STREAM location="file://logs/myServer.log" cycle="1048576"/>
+     	  </ACCESSLOG>
+         <WARNINGLOG>
+           <STREAM location="file://logs/myServer.err" cycle="1048576"/>
+         </WARNINGLOG>
+       </VHOST>
+     </VHOSTS>
+
+   Tags semantics are identical with first example.  Although FTP is
+used for public file sharing, restrictions may be imposed using
+security file.
+
+2.0.1 Data throttling
+---------------------
+
+It is possible to specify a throttling rate for the connection by the
+`connection.throttling' value.  It can be specified in any
+configuration file, at a global level, in the virtual host definition
+and in the local security file.  Its value is specified in bytes/second.
+
+   The following line, for example, set the maximum transfer rate to 1
+KByte/second:
+
+     <DEFINE name="connection.throttling" value="1024"/>
+
+2.0.2 Connections data pool
+---------------------------
+
+To improve performances, the server can use a cache of connections,
+this value can be configured trough the server global variable
+`server.connections_pool.size'.  If it is not specified, a default
+value of 100 is used.  Increase this value if more connections can be
+active at the same time.  Another effect of using a connections cache
+is a less defragmented memory.
+
+2.0.3 HTTP specific configuration
+---------------------------------
+
+2.0.3.1 The LOCATION element
+............................
+
+It may be necessary to register an entire location with a single
+handler and it is done trought `LOCATION'.  Any other element passed
+after the location will be part of the `PATH_INFO' variable.
+
+     <LOCATION path="foo/bar" mime="text/html" handler="CGI"
+               param="/usr/local/bin/handler" />
+
+   In the previous example, the CGI process `/usr/local/bin/handler' is
+used to manage any request to the location `foo/bar', this location
+includes for example: `foo/bar', `foo/bar/baz', `foo/bar/a/file',
+everything that follows `foo/bar' will be part of `PATH_INFO'.
+
+2.0.3.2 Disable specific HTTP methods
+.....................................
+
+MyServer gives you the option to enable or disable HTTP methods command
+for each virtual host.  It can be done trought the `http.COMMAND.allow'
+variable.
+
+   For example, the HTTP TRACE command can be disabled using:
+
+     <DEFINE name="http.trace.allow" value="NO" />
+
+
+File: myserver,  Node: MIME types,  Next: Process security,  Prev: Virtual hosts,  Up: Top
+
+3 MIME types
+************
+
+MIME types are used to specify the type of information a resource
+transmitted to or from the server contains.  Some standard MIME types
+are already defined in the `MIMEtypes.xml' file.  Using the same syntax
+you can define new MIME types or modify existing ones.  For each MIME
+type it is possible to specify how the server will handle the files and
+which actions take before it can be sent to the client.
+
+   In this example two MIME types are defined:
+
+     <MIME mime="text/html" handler="SEND" param="">
+           <EXTENSION value="html"/>
+           <FILTER value="gzip"/>
+     </MIME>
+
+     <MIME mime="text/html" handler="CGI" param="/usr/bin/perl" selfExecuted="NO">
+           <EXTENSION value="pl"/>
+           <DEFINE name="http.error.file.404" value="404.html"/>
+     </MIME>
+
+   The former defines to send any file with a `.html' extension as it
+is, in case it is supported by the client then the file content is
+compressed using the gzip.  The latter specifies that every file with a
+`pl' extension are handled by the `/usr/bin/perl' CGI and the new
+process standard output is redirected to the client.  In addition, it
+defines which resource use when a 404 HTTP file not found error happens.
+
+   Every MIME type is made of:
+
+   * mime the MIME attribute specifies the MIME name.
+
+   * extension the MIME type will be used by any file with this
+     extension.  More `extension' items can be specified for the same
+     MIME type.
+
+   * filter this directive registers a filter to use on the MIME type.
+     It depends from the protocol how it will be handled, a protocol
+     may ignore this directive.  For example HTTP will use a modifier
+     filter only if it is accepted by the client.
+
+   * handler specifies how the server will manage this file.  It is
+     protocol specific, for example, FTP doesn't support it.
+
+   * param specifies additional params for the handler.
+
+   * selfExecuted where it is supported, lanuch the accessed resource
+     as a process or a server.  For example, there is need to use
+     selfExecuted on the CGI protocol if the accessed resource can be
+     used as a process.  Differently if it is not specified, the
+     resource mapped by the URI will be used as an additional argument
+     to `param'.
+
+   `<FILTER>' defines a filter for the MIME type.  The data will pass
+through the filter before being sent to the user.  In the example
+above, the data would be sent gzipped to the user.  It is possible to
+specify multiple filters for the same MIME type, they will be applied
+in the specified order.
+
+   `<DEFINE>' It defines a new value for a variable, take a look here
+*note Security files:: for more details on the `<DEFINE>' element.
+
+   The same MIME type can have several extensions, you will need to
+specify a different `<EXTENSION>' element for each extension.
+
+   These are valid HTTP handlers:
+
+  1. SEND Send the file statically as it is.  This command is used for
+     files extensions such as .html and .jpg that don't need any
+     external intervention from the web server.
+
+  2. CGI Run the CGI script indicated in the handler.  It is used for
+     file extensions such as .php and .pl that need to be processed
+     before sending any data to the client.  Every request requires the
+     execution of a new process.
+
+  3. FASTCGI Run the script using the FastCGI server specified in the
+     handler.  Differently than CGI, a new process is not spawned on
+     every request but it is done opening a connection to the specified
+     FastCGI server.
+
+  4. SCGI Like FastCGI, it is designed as a replacement for the CGI
+     protocol.
+
+  5. MSCGI Run the MSCGI script. This library is only available for
+     MyServer. It is used to build fast and efficient CGIs that needs
+     to access MyServer internal data.  It is not portable, don't use
+     unless you are going to write something that can be used only for
+     MyServer.
+
+  6. ISAPI Run the ISAPI module.  It is available only under the
+     Microsoft Windows operating system thus it is not portable or can
+     be used on a Free operating system.
+
+  7. WINCGI This protocol is obsoleted by ISAPI.  As CGI it needs a new
+     process for every request and it uses files to communicate with
+     the web server.  It is very inefficient.
+
+  8. PROXY The HTTP request is forwarded to the HTTP server specified
+     in the `param'.  This is not a real proxy, there is not caching and
+     message is forwarded as it is without any change.
+
+   It is possible to match the file name against a regular expression
+instead of specifying only its extension.
+
+   It is done using the `PATH' directive in the following way:
+
+     <?xml version ="1.0"?>
+     <MIME mime="text/html" handler="SEND" param="">
+     <PATH regex="/foo/bar/.*" />
+     </MIME>
+
+   The `PATH' regular expressions are checked before the file
+extension, in the order they are specified in the configuration file.
+
+   The proxy handler can keep a pool of active connections to the most
+recent used websites in order to make new requests faster.  The maximum
+number of active connections that the server should maintain, can be
+configured trough the global variable
+`http.proxy.connections.keepalive'.
+
+3.1 Symbolic links
+==================
+
+MyServer offers the feature to follow symlinks where they are supported.
+You can configure MyServer to follow symbolic links specifying this
+line in the `myserver.xml' file.
+
+     	<DEFINE name="symlinks.follow" value="YES" />
+
+   By default MyServer doesn't follow symbolic links.  Symbolic links
+are still followed when they are not the last component of the path.
+
+3.2 Different MIME type handlers
+================================
+
+It is possible to use different handlers to determine the file MIME
+type.  Additional handlers can be supported by external plugins.
+
+   The definition of external handlers can be done per vhost or globally
+in the main configuration file changing the value of the variable
+`mime.handler'.
+
+     	<DEFINE name="mime.handler" value="mime_magic" />
+
+
+File: myserver,  Node: Process security,  Next: Security files,  Prev: MIME types,  Up: Top
+
+4 Process security
+******************
+
+Under POSIX it is possible to change the MyServer process user
+identifier and group identifier after it has bound the necessary ports
+(only the root user can bind ports < 1024).
+
+   To specify a different process user id (PID), you must specify it in
+the `myserver.xml' file as:
+
+     <DEFINE name="server.uid" value="UID" />
+
+   Differently, to change the process group id (GID), the configuration
+line to use is:
+
+     <DEFINE name="server.gid" value="GID" />
+
+   When one of these features is used, MyServer will not use the
+auto-reboot because it will not be possible to get back old permissions.
+
+4.1 CGI processes.
+==================
+
+It is possible to run CGI processes using a different uid/gid.  It can
+be done defining the "cgi.uid" and "cgi.gid" values in a configuration
+file.  It can be specified at any configuration level.
+
+   These directives can be used in a security file to force the
+execution of the new process with both uid and gid to 1000.
+     <DEFINE name="cgi.uid" value="1000" />
+     <DEFINE name="cgi.gid" value="1000" />
+
+   It is also possible to specify a new root directory location using
+the cgi.chroot attribute:
+
+     <DEFINE name="cgi.chroot" value="/some/where" />
+
+4.2 Fork Server
+===============
+
+In a POSIX environment the `fork' syscall is used to execute new
+processes.  It clones the caller process keeping any open file or
+connection in the child process too.  To avoid this problem a fork
+server is present in MyServer.  The communication between the MyServer
+process and the fork server is done trought a socket.  When MyServer
+wants to execute a new process two connections are opened to the fork
+server, for the stdin and stdout streams, and the fork server will fork
+itself and execute the process using these connections as its I/O
+streams.
+
+   It is not configurable in any configuration file as the MyServer
+process is forked to create it before any file or connection is active.
+
+   It is enabled passing the `-f' switch to the myserver process.
+
+   If the MyServer main process is configured to change its uid/gid
+after its initialization, it is the only way to spawn new processes with
+uid/gid different than the MyServer process.
+
+4.3 FastCGI/SCGI servers
+========================
+
+By default, FastCGI and SCGI servers are lazily initialized by MyServer
+on the first request to a resource that is handled trought these
+protocols.  In this case MyServer will initialize it using a random TCP
+port.  There may be cases where a different configuration is needed and
+it is done using the `PROCESS_SERVER' directive inside the
+`myserver.xml' file.
+
+   A `PROCESS_SERVER' entry makes it possible to access a specific
+FastCGI/SCGI configuration inside MIME types by its name.
+
+     <!-- Inside myserver.xml.  -->
+     <DEFINE name="server.process_servers">
+       <DEFINE server="/opt/bin/fastcgi_server" domain="fastcgi"
+               host="localhost" port="2010" local="yes" uid="1000"
+               chroot="/chroot" gid="1000"/>
+     </DEFINE>
+
+   In the previous example the FastCGI server `/opt/bin/fastcgi_server'
+is created.  The `domain' must be "fastcgi" or "scgi", depending on the
+specific protocol to use.  `local' specifies if the server is handled
+by myserver or it is already running; in the former case, myserver will
+simply access and use it.  If the server is not local then the `server'
+is a simple label that can be used by a MIME type trought `param' to
+access it.
+
+   It is possible to specify a different uid/gid for the local server
+process and don't maintain the original myserver process privileges.
+It can be done using the `uid' and `gid' elements.
+
+   Also, it is possible to use a different root directory, mapping the
+`/' path to what is specied in the `chroot' attribute.  Any file lookup
+can't go upper what is specied in the chroot.  Pay attention that any
+path specified in `server' must be relative to the new chroot.
+
+   The following code, declare an already running FastCGI server and
+registers it on the `fcgi' extension:
+
+     <DEFINE name="process_servers.list">
+       <DEFINE server="a_remote_server" domain="fastcgi" host="foo" port="2010"
+               local="no"/>
+     </DEFINE>
+
+     <!-- Inside MIMEtypes.xml.  -->
+     <MIME mime="text/html" handler="RUNFASTCGI" param="a_remote_server">
+           <EXTENSION value="fcgi"/>
+     </MIME>
+
+4.3.1 FastCGI X-Sendfile directive
+----------------------------------
+
+The X-Sendfile directive can be used by FastCGI servers to instruct the
+web server to ignore any content but send the file specified in the
+X-Sendfile header.  It is much faster to transfer static contents and
+avoid an additional step from the FastCGI server to the web server.
+
+   Since the FastCGI X-Sendfile can ask any file to be accessed
+statically, this feature is not considered safe you must force it
+manually, in can be done on a virtual hosts basis.  It is done trough
+the `fastcgi.sendfile.allow' variable, to enable X-Sendfile set its
+value to `YES'.
+
+
+File: myserver,  Node: Security files,  Next: WebDAV,  Prev: Process security,  Up: Top
+
+5 Process security
+******************
+
+It is possible to change almost any configuration for a single
+directory or a single resource trough the `.security.xml'.  This file
+can be placed in any web directory and it will overwrite default
+configuration values.  If the `.security.xml' file is not found in the
+directory where the requested resource is, then MyServer will look in
+the parents directory until the file is found.  If `.security.xml' is
+not present in the virtual host root directory then the default one
+which is present in the system directory will be used.
+
+   Usually consider the first valid value found in this order:
+  1. Local `.security.xml'.
+
+  2. Parent directories `.security.xml'.
+
+  3. System vhost directory `.security.xml'.
+
+  4. MIME type configuration `MIMEtypes.xml'.
+
+  5. Virtual host configuration.
+
+  6. Global server configuration.
+
+   Some values are not configurable in any `.security.xml' file and
+they are took directly from the Virtual host configuration and in some
+cases directly from the global configuration file.
+
+   In MyServer there are two different steps involved in the logging
+phase: user authentication and validation.
+
+   In the first step a permission mask is found given the
+username:password pair, no other information are used in this phase.
+In the second phase this value is refined using more information.  The
+two phases are completely separated and it is possible to use different
+sources for any of them.
+
+   The `.security.xml' can be used for both phases and by default it is.
+
+   The anonymous user is matched inside MyServer with the "Guest"
+username and an empty password.
+
+   The name for the security file can be changed trought the
+`security.filename' variable.  The maximum allowed size for a security
+file can be limited by the `security.max_size' variable, by default
+there is no limit.  Both `security.filename' and `security.max_size'
+can be defined in the global configuration file or differently for every
+virtual host.
+
+5.1 Security file user authentication
+=====================================
+
+The information used for the first phase of logging is a simple list of
+USER elements.  Any permission is configured by an attribute, if the
+attribute value is equal to "YES" then the permission is granted.
+
+   The permissions that MyServer considers are:
+  1. READ
+
+  2. EXECUTE
+
+  3. BROWSE
+
+  4. WRITE
+
+  5. DELETE
+
+   In the following example we enable an anonymous user to access
+resources in READ/EXECUTE/BROWSE mode, DELETE and WRITE are both denied.
+
+     <SECURITY>
+       <USER name="Guest" password="" READ="YES" EXECUTE="YES" BROWSE="YES"
+          DELETE="NO" WRITE="NO"/>
+     </SECURITY>
+
+   As no other information beside username:password is used, this first
+phase is the same for any protocol supported by MyServer.
+
+   To improve security it is possible to use in place of the clear-text
+password a crypted version of it.  It is done using the `algorithm'
+variable.  It specifies the function F to apply to the client specified
+password before compare it with the `password' value.
+
+     <SECURITY>
+       <USER name="admin" password="8ee0f7b66d1ab05714573fc556fbd7ff"
+                    algorithm="md5" READ="YES" EXECUTE="YES"
+                    BROWSE="YES" DELETE="NO" WRITE="NO"/>
+     </SECURITY>
+
+5.1.0.1 Http Digest
+...................
+
+If the HTTP digest authorization scheme is used, it is not possible to
+use any password hash but the original clear-text password.  The only
+exception to this rule is to specify the A1 part in the Digest scheme.
+
+   It is computed by the function: MD5 (username:realm:password).
+
+       <DEFINE name="http.auth" value="digest" />
+       <USER name="user" algorithm="a1" password="c2deada0bcb64f99e65be0d33bb92d54"
+             READ="YES" EXECUTE="YES" BROWSE="YES" WRITE="NO"/>
+
+   The realm value used by MyServer is the virtual host name, including
+the port number, i.e. `localhost:8080'.  The A1 password can be
+computed using the following shell command, be sure to use the right
+user, realm and password values.
+
+       printf "%s:%s:%s" user realm password | md5sum
+
+5.1.1 FTP Anonymous user
+------------------------
+
+To allow the `.security.xml' re-use, the FTP "Anonymous" user is mapped
+internally by MyServer to the "Guest" user.
+
+5.2 Validation phase
+====================
+
+The second phase allows to define some rules that can overload the
+settings specified in the authorization phase.
+
+   The default validator used by MyServer is the `.security.xml' file.
+
+5.2.1 XML Validation file
+-------------------------
+
+The XML validation phase reads the tag contained in the order that they
+are specified.  It works almost in the same way a programming language
+does, but differently the XML validator doesn't allow a loop structure,
+this is required to terminate the parsing in a finite time.
+
+   The XML validation is done using four commands:
+
+  1. CONDITION It defines a block that is evaluated only when the
+     specified condition is true.
+
+  2. DEFINE It defines a new value for a variable that can be used
+     later by the server.
+
+  3. PERMISSION Redefine the permission found in the authorization
+     phase.
+
+  4. RETURN Immediately return from the validation.
+
+5.2.1.1 CONDITION element
+.........................
+
+The `CONDITION' block allows to evaluate a condition and in case it is
+satisfied then the inner XML is evaluated too, in case it is not
+satisfied then the inner code is not considered.  It works like the
+`if' statement usually present in any programming language but offering
+less syntactical freedom.
+
+   Here it is showed a simple use of `CONDITION':
+     <CONDITION name="auth.user" value="Guest">
+     ...
+     </CONDITION>
+
+   The inner XML code, omitted for clarity, is evaluated only when the
+`auth.user' variable is equals to the value "Guest".
+
+   It may be necessary to specify the other case, evaluate the inner
+block every time the condition is not satisfied.  It is done using the
+`not' attribute:
+
+     <CONDITION name="auth.user" value="Guest" not="yes">
+     ...
+     </CONDITION>
+
+   In this case, the inner block is evaluated every time the
+`auth.user' is different than "Guest".
+
+   It is possible to match a value against a regular expression, in this
+case you will need to declare it explicitly.
+
+     <CONDITION name="auth.user" value="admin.*" regex="yes" not="yes">
+     ...
+     </CONDITION>
+
+5.2.1.2 DEFINE element
+......................
+
+The `DEFINE' block is used to specify a value for a variable that later
+can be accessed by the server.  This is the way to specify variables
+that it is possible to specify in the security file (not all variables
+are allowed to be defined here), overloading the value specified in the
+virtual host or in the server global configuration.  The syntax for the
+`DEFINE' command is:
+     <DEFINE name="http.error.file.404" value="404.html"/>
+
+   In the previous example the HTTP 404 error page was replaced with a
+customized HTML page.
+
+   As the same configuration file can be used by different contexts, as
+a web host or a FTP site, any variable has meaning only in its original
+environment, define `http.error.file.404' in a FTP site will not have
+any effect.
+
+5.2.1.3 PERMISSION element
+..........................
+
+The `PERMISSION' element has the same syntax used in the first
+authorization phase, the only difference is that username and password
+are not specified.
+
+     <PERMISSION READ="NO" EXECUTE="NO" BROWSE="NO" DELETE="NO" WRITE="NO">
+
+   The previous example denies any access to the resource, replacing any
+value found previously.
+
+5.2.1.4 RETURN element
+......................
+
+The `RETURN' element allows to exit immediately from the XML flow
+without consider any other command specified in the file.
+
+   It has an additional attribute `value' that must be set to the value
+`ALLOW' to keep the previous found attribute mask.
+
+   To immediately return from the XML file and at the same time deny any
+access, without care of the previous found permission mask, you must do:
+     <RETURN value="DENY" />
+
+   Differently, to return from the flow keeping the found permission
+mask there is need to do like:
+     <RETURN value="ALLOW" />
+
+   Pay attention, if at the same time you want to change the permissions
+then you will need to specify them explicitly by the `PERMISSION'
+command.
+
+5.2.1.5 SET_HEADER
+..................
+
+The `SET_HEADER' directive specifies a value to be used for the
+response header, for protocols supporting it.
+
+   This directive, for HTTP/HTTPS, overwrites default values for the
+response header, anything specified at this stage of the pipeline can be
+modified later by web applications, such as CGIs.
+
+   For example, it is possible to specify a directive for caching using
+something like:
+
+     <SET_HEADER name="Cache-Control" value="no-store" />
+
+   The server doesn't check how these values are changed and if they can
+cause problems in the protocol flow, it is your responsibility to use
+safe values.
+
+
+File: myserver,  Node: WebDAV,  Next: Error pages,  Prev: Security files,  Up: Top
+
+6 WebDAV
+********
+
+WebDAV stands for Web-based Distributed Authoring and Versioning.  It
+is a set of HTTP based methods used for collaborative management of
+files and directories on a remote server.  GNU MyServer is WebDAV
+compliant; that said, you can use a webdav client to manage your data
+on the server.
+
+   As a first step, you must enable webdav. To do that, set the value of
+"http.webdav.enable" in `myserver.xml' file as "YES":
+
+     <DEFINE name="http.webdav.enable" value="YES"/>
+
+6.1 Commands.
+=============
+
+While the exact syntax to execute various webdav functions maybe client
+dependant, the basic implementation remains the same.  Some of the
+webdav commands that myserver supports are:
+
+   COPY Copies a resource from source to destination. The possible
+status codes returned are: 503 - Service Unavailable 423 - Locked 412 -
+Precondition Failed 409 - Conflict 201 - Created
+
+     COPY source dest
+
+   MOVE Moves a resource from source to destination. The possible
+status codes returned are: 503 - Service Unavailable 423 - Locked 412 -
+Precondition Failed 409 - Conflict 201 - Created
+
+     MOVE source dest
+
+   DELETE Deletes a resource, given its path. The possible status codes
+returned are: 503 - Service Unavailable 423 - Locked 403 - Forbidden
+202 - Accepted
+
+     DELETE path_to_resource
+
+   LOCK Locks a resource. The possible status codes returned are: 503 -
+Service Unavailable 409 - Conflict 500 - Internal Server Error
+
+     LOCK path_to_resource
+
+   UNLOCK Unlocks a resource. The possible status codes returned are:
+503 - Service Unavailable
+
+     UNLOCK path_to_resource
+
+   MKCOL Creates a collection. The possible status codes returned are:
+503 - Service Unavailable 423 - Locked 412 - Precondition Failed 409 -
+Conflict 403 - Forbidden 201 - Created 500 - Internal Server Error
+
+     MKCOL name_of_collection
+
+6.2 Note.
+=========
+
+Certain commands such as DELETE and MOVE require certain privileges.
+Please see the Security section for more details.
+
+
+File: myserver,  Node: Error pages,  Next: Directory listing,  Prev: WebDAV,  Up: Top
+
+7 Error pages
+*************
+
+7.1 Error pages
+===============
+
+It is possible to specify a page when a HTTP error happens using the
+option:
+
+     	<DEFINE name="http.use_error_file" value="YES" />
+
+   So, if you set the value to `NO', like in the line below,
+
+     	<DEFINE name="http.use_error_file" value="NO" />
+
+   If an error page is not used MyServer will (by default) just send a
+header to your browser with the error code.  It is possible to include
+a HTTP body in the error page, using:
+
+       <DEFINE name="http.error_body" value="YES" />
+
+
+File: myserver,  Node: Directory listing,  Next: SSL certificates,  Prev: Error pages,  Up: Top
+
+8 Directory listing
+*******************
+
+8.1 Directory Listing
+=====================
+
+When a resource mapped to a local directory is requested, MyServer
+shows its content like an usual file manager does.
+
+8.1.1 Default files
+-------------------
+
+In the `myserver.xml' main configuration or in the `virtualhosts.xml'
+file, it is possible to set a list of default file names to use instead
+of the directory content.
+
+   Default file names are defined using a list called
+`http.default_file' and they are checked in the specified order until
+one is found.  If the file can't be found in the directory then the
+directory content is listed.
+
+     <DEFINE name="http.default_file">
+             <DEFINE value="default.html"/>
+             <DEFINE value="default.htm"/>
+             <DEFINE value="index.html"/>
+             <DEFINE value="index.htm"/>
+     </DEFINE>
+
+   The previous lines define the order of files that are checked by the
+web server when a directory is requested.  For example, given the
+previous configuration and a request to the `http://foo/bar/' resource,
+where `bar/' is mapped to a local directory, the server will look for
+these files in order:
+
+     http://foo/bar/default.htm
+     http://foo/bar/index.htm
+     http://foo/bar/default.html
+     http://foo/bar/index.html
+
+   If that resources don't exist then the content of `bar/' is listed.
+
+8.1.2 Directory listing columns
+-------------------------------
+
+When the directory content is listed, by default MyServer shows the
+file name, last modified time and file size.  This default bahaviour
+can be changed redefining the `http.dir.format' value.
+
+   It can be redefined in the local security file, in the virtual host
+or in the global server configuration.  Its value is a formatting
+string, columns are showed in the same order that they are specified.
+
+   * %f specifies the file name.
+
+   * %t specifies the file last modified time.
+
+   * %s specifies the file size.
+
+   For example, the `%f%s' value displays the file name followed by its
+size, while `%f%t' displays the file name and its last modified time.
+
+8.1.3 Directory listing layout
+------------------------------
+
+You can change the layout of the directory browsing page. The line
+below, in `myserver.xml', points to the CSS file used to configure the
+layout for the browsing directory pages:
+
+       <DEFINE name="http.dir.css" value="/sys/css/browsestyle.css" />
+
+8.1.4 Ignore entries
+--------------------
+
+It is possible to ignore some files to be listed from the final output.
+It is done using the `http.dir.ignore' regular expression that can be
+specified at any level.
+
+   Pay attention, this directive does not change the file visibility, so
+a direct request to the entries that are part of the mask will have the
+same effect as if this directive is not specified.
+
+   In the following example, the file `hidden' is not included in the
+directory listing.
+
+       <DEFINE name="http.dir.ignore" value="hidden" />
+
+
+File: myserver,  Node: SSL certificates,  Next: Log management,  Prev: Directory listing,  Up: Top
+
+9 SSL certificates
+******************
+
+9.1 Brief notes on data encryption
+==================================
+
+The data encryption is used to protect the data that is sent between
+the client and the server.  There are two types of algorithm: symmetric
+and asymmetric data encryption algorithms.  The difference between the
+two types of algorithm is that for the symmetric algorithms the same
+key is used both for encryption and decryption.  These algorithms are
+not used by servers with a potentially large number of clients because
+the data captured can be decrypted by any client that know the key and
+because the key needs to be distribute in a safe manner not
+distributing it on a large network like Internet.  The asymmetric
+algorithms work in a different way, the data encrypted with a key can
+be decrypted only with the other key and vice-versa.  Anyone know the
+public key but only the owner knows the private one.  In this way the
+key owner do not have to distribute the key only to know clients but he
+can distributes it to a large scale network.
+
+9.2 How create SSL certificates with GNU TLS
+============================================
+
+A certificate is needed to certify your identity through a CA
+(Certification Authority).  You can use a certificate without register
+it to third party CA, it is called self-signed certificate.  You can
+find all the necessary tools to create certificates in the GNU TLS
+command line tools.  Look here for more information:
+`http://www.gnu.org/software/gnutls/'.
+
+   To generate a private key/self signed certificate couple you will
+need to execute these two commands:
+
+     certtool --generate-privkey --outfile cert.key
+     certtool --generate-self-signed --load-privkey cert.key \
+              --outfile cert.pem
+
+9.3 How use certificates in MyServer
+====================================
+
+To configure certificates in MyServer you have to put the two files:
+`cert.key', `cert.pem' in the MyServer certificates directory.
+
+   To configure a HTTPS host that will use the created certificate, add
+the following lines in the `virtualhosts.xml' file:
+
+     <VHOST>
+       <NAME>Every SSL connection</NAME>
+       <PORT>443</PORT>
+       <SSL_PRIVATEKEY>certificates/cert.key</SSL_PRIVATEKEY>
+       <SSL_CERTIFICATE>certificates/cert.pem</SSL_CERTIFICATE>
+       <PROTOCOL>HTTPS</PROTOCOL>
+       <DOCROOT>web</DOCROOT>
+       <SYSROOT>system</SYSROOT>
+         <ACCESSLOG>
+           <STREAM location="file://logs/myServer.log" cycle="1048576"/>
+     	  </ACCESSLOG>
+         <WARNINGLOG>
+           <STREAM location="file://logs/myServer.err" cycle="1048576"/>
+         </WARNINGLOG>
+     </VHOST>
+
+   Take a look at the *note Virtual hosts:: documentation to get more
+information about other tags.
+
+
+File: myserver,  Node: Log management,  Next: Concept index,  Prev: SSL certificates,  Up: Top
+
+10 Log management
+*****************
+
+10.1 Overview of the log management features
+============================================
+
+The MyServer's log management system was designed to support logging
+over different targets. At the moment, these targets are made out of
+files, sockets and, of course, consoles. Each target, must be referred
+through its location string. In addition, it is possible to provide a
+list of filters (e.g. the Gzip filter) to improve the logging
+capabilities.
+
+10.2 Use of the log manager
+===========================
+
+This section will introduce you to the use of the log management
+features.
+
+10.2.1 Location strings
+-----------------------
+
+A location string can be provided as an URI; the basic schema is in the
+form `protocol://resource'. `protocol' can be chosen between
+  1. `console'
+
+  2. `file'
+
+  3. `socket'
+        and `resource' can be either a valid filename or an hostname
+according to its `protocol'. The `console' protocol, can take as its
+`resource' argument, either `stdout' or `stderr'.
+
+10.2.1.1 Location string examples
+.................................
+
+  1. Send log messages to a host whose ip address is 192.168.1.18, on
+     port 12345 :
+          socket://192.168.1.18:12345
+
+  2. Send log messages to the file /var/log/myserver/MyServerHTTP.log :
+          file:///var/log/myserver/MyServerHTTP.log
+     Note the extra '/' needed to refer an absolute path.
+
+  3. Send log messages to the standard error
+          console://stderr
+
+10.2.2 Setting the MyServer's main log
+--------------------------------------
+
+You can set the MyServer's main log location through the switch
+     --loglocation=protocol://resource
+   where the `--loglocation' argument is a valid location string.
+
+10.2.3 Setting the logging resources for virtual hosts
+------------------------------------------------------
+
+Each virtual host needs two main log targets, one for the access
+messages and the other one for the error messages, whose entries in the
+configuration file, are respectively `ACCESSLOG' and `WARNINGLOG'. Each
+of these  targets, can in turn write its messages over different
+streams. To tell MyServer about all that, you can edit the
+`virtualhosts.xml' file, and apply the information found in this
+section, to each `VHOST' entry of that file. As we can see in the
+following example, the `ACCESSLOG' root entry for the accesses log
+configuration, contains some `STREAM' nodes, and each `STREAM' contains
+two attributes, the mandatory `location' and the optional `cycle'. A
+`STREAM' node, can also contain optional `FILTER' sub-nodes, one for
+each filter that we want to add to the `STREAM'.
+     <ACCESSLOG type="combined">
+       <STREAM location="file://logs/MyServerHTTP.log" cycle="1048576">
+         <FILTER>gzip</FILTER>
+       </STREAM>
+       <STREAM location="console://stderr"/>
+     </ACCESSLOG>
+   Above we have two streams attached to the `ACCESSLOG' entry. The
+first one, is a file. This file will grow up to 1048576 bytes, over that
+limit it will be cycled. Also, this target will take advantage of the
+gzip compression, since it will write to the file through the gzip
+filter. The second one is the standard error stream over the console.
+The next example, shows instead the `WARNINGLOG' entry. In that
+example, we still have two streams where warning messages will be sent.
+The first one is a socket, while the second one is a file that will
+grow with no limit over its size. No filters will be applied to that
+stream. Note that if we don't specify the `cycle' attribute, it is
+assumed to be zero by default, which means to never cycle the `STREAM'.
+     <WARNINGLOG>
+       <STREAM location="socket://192.168.1.13:8080"/>
+       <STREAM location="file://MyServerHTTP.err"/>
+     </WARNINGLOG>
+   If a wrong filter is specified, its relative `STREAM' will not be
+added.
+
+10.2.4 Console colors
+---------------------
+
+It is possible to set color attributes for the text written over the
+console. In this way, messages can look different according to the
+logging level which they belong to.  For example, you may wish to write
+error messages with a red text over a black background, info messages
+with a white text over a black background and warning messages with a
+yellow text over a black background. You can easily tell MyServer about
+that information by editing the `myserver.xml' configuration file and
+adding the following code:
+       <DEFINE name="log_color.info_fg" value="white">
+       <DEFINE name="log_color.info_bg" value="black">
+
+       <DEFINE name="log_color.warning_fg" value="yellow">
+       <DEFINE name="log_color.warning_bg" value="black">
+
+       <DEFINE name="log_color.error_fg" value="red">
+       <DEFINE name="log_color.error_bg" value="black">
+   Allowed values for colors are `black', `red', `green', `yellow',
+`blue', `magenta', `cyan' and `white'. The two common suffixes `fg' and
+`bg' represent respectively the foreground attribute and the background
+one, while the three prefixes, `info', `warning' and `error' represent
+kinds of logging messages managed by MyServer.  If the console colours
+information is missing or it is partially provided, MyServer will use
+default values.
+
+
+File: myserver,  Node: Concept index,  Next: GNU Free Documentation License,  Prev: Log management,  Up: Top
+
+Concept index
+*************
+
+ [index ]
+* Menu:
+
+* Basic configuration:                   Basic configuration.   (line 6)
+* Directory listing:                     Directory listing.     (line 6)
+* Error pages:                           Error pages.           (line 6)
+* Log Management:                        Log management.        (line 6)
+* MIME types:                            MIME types.            (line 6)
+* Process security <1>:                  Security files.        (line 6)
+* Process security:                      Process security.      (line 6)
+* SSL certificates:                      SSL certificates.      (line 6)
+* Virtual hosts:                         Virtual hosts.         (line 6)
+* WebDAV:                                WebDAV.                (line 6)
+
+
+File: myserver,  Node: GNU Free Documentation License,  Prev: Concept index,  Up: Top
+
+Appendix A GNU Free Documentation License
+*****************************************
+
+                     Version 1.3, 3 November 2008
+
+     Copyright (C) 2000, 2001, 2002, 2007, 2008 Free Software Foundation, Inc.
+     `http://fsf.org/'
+
+     Everyone is permitted to copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+  0. PREAMBLE
+
+     The purpose of this License is to make a manual, textbook, or other
+     functional and useful document "free" in the sense of freedom: to
+     assure everyone the effective freedom to copy and redistribute it,
+     with or without modifying it, either commercially or
+     noncommercially.  Secondarily, this License preserves for the
+     author and publisher a way to get credit for their work, while not
+     being considered responsible for modifications made by others.
+
+     This License is a kind of "copyleft", which means that derivative
+     works of the document must themselves be free in the same sense.
+     It complements the GNU General Public License, which is a copyleft
+     license designed for free software.
+
+     We have designed this License in order to use it for manuals for
+     free software, because free software needs free documentation: a
+     free program should come with manuals providing the same freedoms
+     that the software does.  But this License is not limited to
+     software manuals; it can be used for any textual work, regardless
+     of subject matter or whether it is published as a printed book.
+     We recommend this License principally for works whose purpose is
+     instruction or reference.
+
+  1. APPLICABILITY AND DEFINITIONS
+
+     This License applies to any manual or other work, in any medium,
+     that contains a notice placed by the copyright holder saying it
+     can be distributed under the terms of this License.  Such a notice
+     grants a world-wide, royalty-free license, unlimited in duration,
+     to use that work under the conditions stated herein.  The
+     "Document", below, refers to any such manual or work.  Any member
+     of the public is a licensee, and is addressed as "you".  You
+     accept the license if you copy, modify or distribute the work in a
+     way requiring permission under copyright law.
+
+     A "Modified Version" of the Document means any work containing the
+     Document or a portion of it, either copied verbatim, or with
+     modifications and/or translated into another language.
+
+     A "Secondary Section" is a named appendix or a front-matter section
+     of the Document that deals exclusively with the relationship of the
+     publishers or authors of the Document to the Document's overall
+     subject (or to related matters) and contains nothing that could
+     fall directly within that overall subject.  (Thus, if the Document
+     is in part a textbook of mathematics, a Secondary Section may not
+     explain any mathematics.)  The relationship could be a matter of
+     historical connection with the subject or with related matters, or
+     of legal, commercial, philosophical, ethical or political position
+     regarding them.
+
+     The "Invariant Sections" are certain Secondary Sections whose
+     titles are designated, as being those of Invariant Sections, in
+     the notice that says that the Document is released under this
+     License.  If a section does not fit the above definition of
+     Secondary then it is not allowed to be designated as Invariant.
+     The Document may contain zero Invariant Sections.  If the Document
+     does not identify any Invariant Sections then there are none.
+
+     The "Cover Texts" are certain short passages of text that are
+     listed, as Front-Cover Texts or Back-Cover Texts, in the notice
+     that says that the Document is released under this License.  A
+     Front-Cover Text may be at most 5 words, and a Back-Cover Text may
+     be at most 25 words.
+
+     A "Transparent" copy of the Document means a machine-readable copy,
+     represented in a format whose specification is available to the
+     general public, that is suitable for revising the document
+     straightforwardly with generic text editors or (for images
+     composed of pixels) generic paint programs or (for drawings) some
+     widely available drawing editor, and that is suitable for input to
+     text formatters or for automatic translation to a variety of
+     formats suitable for input to text formatters.  A copy made in an
+     otherwise Transparent file format whose markup, or absence of
+     markup, has been arranged to thwart or discourage subsequent
+     modification by readers is not Transparent.  An image format is
+     not Transparent if used for any substantial amount of text.  A
+     copy that is not "Transparent" is called "Opaque".
+
+     Examples of suitable formats for Transparent copies include plain
+     ASCII without markup, Texinfo input format, LaTeX input format,
+     SGML or XML using a publicly available DTD, and
+     standard-conforming simple HTML, PostScript or PDF designed for
+     human modification.  Examples of transparent image formats include
+     PNG, XCF and JPG.  Opaque formats include proprietary formats that
+     can be read and edited only by proprietary word processors, SGML or
+     XML for which the DTD and/or processing tools are not generally
+     available, and the machine-generated HTML, PostScript or PDF
+     produced by some word processors for output purposes only.
+
+     The "Title Page" means, for a printed book, the title page itself,
+     plus such following pages as are needed to hold, legibly, the
+     material this License requires to appear in the title page.  For
+     works in formats which do not have any title page as such, "Title
+     Page" means the text near the most prominent appearance of the
+     work's title, preceding the beginning of the body of the text.
+
+     The "publisher" means any person or entity that distributes copies
+     of the Document to the public.
+
+     A section "Entitled XYZ" means a named subunit of the Document
+     whose title either is precisely XYZ or contains XYZ in parentheses
+     following text that translates XYZ in another language.  (Here XYZ
+     stands for a specific section name mentioned below, such as
+     "Acknowledgements", "Dedications", "Endorsements", or "History".)
+     To "Preserve the Title" of such a section when you modify the
+     Document means that it remains a section "Entitled XYZ" according
+     to this definition.
+
+     The Document may include Warranty Disclaimers next to the notice
+     which states that this License applies to the Document.  These
+     Warranty Disclaimers are considered to be included by reference in
+     this License, but only as regards disclaiming warranties: any other
+     implication that these Warranty Disclaimers may have is void and
+     has no effect on the meaning of this License.
+
+  2. VERBATIM COPYING
+
+     You may copy and distribute the Document in any medium, either
+     commercially or noncommercially, provided that this License, the
+     copyright notices, and the license notice saying this License
+     applies to the Document are reproduced in all copies, and that you
+     add no other conditions whatsoever to those of this License.  You
+     may not use technical measures to obstruct or control the reading
+     or further copying of the copies you make or distribute.  However,
+     you may accept compensation in exchange for copies.  If you
+     distribute a large enough number of copies you must also follow
+     the conditions in section 3.
+
+     You may also lend copies, under the same conditions stated above,
+     and you may publicly display copies.
+
+  3. COPYING IN QUANTITY
+
+     If you publish printed copies (or copies in media that commonly
+     have printed covers) of the Document, numbering more than 100, and
+     the Document's license notice requires Cover Texts, you must
+     enclose the copies in covers that carry, clearly and legibly, all
+     these Cover Texts: Front-Cover Texts on the front cover, and
+     Back-Cover Texts on the back cover.  Both covers must also clearly
+     and legibly identify you as the publisher of these copies.  The
+     front cover must present the full title with all words of the
+     title equally prominent and visible.  You may add other material
+     on the covers in addition.  Copying with changes limited to the
+     covers, as long as they preserve the title of the Document and
+     satisfy these conditions, can be treated as verbatim copying in
+     other respects.
+
+     If the required texts for either cover are too voluminous to fit
+     legibly, you should put the first ones listed (as many as fit
+     reasonably) on the actual cover, and continue the rest onto
+     adjacent pages.
+
+     If you publish or distribute Opaque copies of the Document
+     numbering more than 100, you must either include a
+     machine-readable Transparent copy along with each Opaque copy, or
+     state in or with each Opaque copy a computer-network location from
+     which the general network-using public has access to download
+     using public-standard network protocols a complete Transparent
+     copy of the Document, free of added material.  If you use the
+     latter option, you must take reasonably prudent steps, when you
+     begin distribution of Opaque copies in quantity, to ensure that
+     this Transparent copy will remain thus accessible at the stated
+     location until at least one year after the last time you
+     distribute an Opaque copy (directly or through your agents or
+     retailers) of that edition to the public.
+
+     It is requested, but not required, that you contact the authors of
+     the Document well before redistributing any large number of
+     copies, to give them a chance to provide you with an updated
+     version of the Document.
+
+  4. MODIFICATIONS
+
+     You may copy and distribute a Modified Version of the Document
+     under the conditions of sections 2 and 3 above, provided that you
+     release the Modified Version under precisely this License, with
+     the Modified Version filling the role of the Document, thus
+     licensing distribution and modification of the Modified Version to
+     whoever possesses a copy of it.  In addition, you must do these
+     things in the Modified Version:
+
+       A. Use in the Title Page (and on the covers, if any) a title
+          distinct from that of the Document, and from those of
+          previous versions (which should, if there were any, be listed
+          in the History section of the Document).  You may use the
+          same title as a previous version if the original publisher of
+          that version gives permission.
+
+       B. List on the Title Page, as authors, one or more persons or
+          entities responsible for authorship of the modifications in
+          the Modified Version, together with at least five of the
+          principal authors of the Document (all of its principal
+          authors, if it has fewer than five), unless they release you
+          from this requirement.
+
+       C. State on the Title page the name of the publisher of the
+          Modified Version, as the publisher.
+
+       D. Preserve all the copyright notices of the Document.
+
+       E. Add an appropriate copyright notice for your modifications
+          adjacent to the other copyright notices.
+
+       F. Include, immediately after the copyright notices, a license
+          notice giving the public permission to use the Modified
+          Version under the terms of this License, in the form shown in
+          the Addendum below.
+
+       G. Preserve in that license notice the full lists of Invariant
+          Sections and required Cover Texts given in the Document's
+          license notice.
+
+       H. Include an unaltered copy of this License.
+
+       I. Preserve the section Entitled "History", Preserve its Title,
+          and add to it an item stating at least the title, year, new
+          authors, and publisher of the Modified Version as given on
+          the Title Page.  If there is no section Entitled "History" in
+          the Document, create one stating the title, year, authors,
+          and publisher of the Document as given on its Title Page,
+          then add an item describing the Modified Version as stated in
+          the previous sentence.
+
+       J. Preserve the network location, if any, given in the Document
+          for public access to a Transparent copy of the Document, and
+          likewise the network locations given in the Document for
+          previous versions it was based on.  These may be placed in
+          the "History" section.  You may omit a network location for a
+          work that was published at least four years before the
+          Document itself, or if the original publisher of the version
+          it refers to gives permission.
+
+       K. For any section Entitled "Acknowledgements" or "Dedications",
+          Preserve the Title of the section, and preserve in the
+          section all the substance and tone of each of the contributor
+          acknowledgements and/or dedications given therein.
+
+       L. Preserve all the Invariant Sections of the Document,
+          unaltered in their text and in their titles.  Section numbers
+          or the equivalent are not considered part of the section
+          titles.
+
+       M. Delete any section Entitled "Endorsements".  Such a section
+          may not be included in the Modified Version.
+
+       N. Do not retitle any existing section to be Entitled
+          "Endorsements" or to conflict in title with any Invariant
+          Section.
+
+       O. Preserve any Warranty Disclaimers.
+
+     If the Modified Version includes new front-matter sections or
+     appendices that qualify as Secondary Sections and contain no
+     material copied from the Document, you may at your option
+     designate some or all of these sections as invariant.  To do this,
+     add their titles to the list of Invariant Sections in the Modified
+     Version's license notice.  These titles must be distinct from any
+     other section titles.
+
+     You may add a section Entitled "Endorsements", provided it contains
+     nothing but endorsements of your Modified Version by various
+     parties--for example, statements of peer review or that the text
+     has been approved by an organization as the authoritative
+     definition of a standard.
+
+     You may add a passage of up to five words as a Front-Cover Text,
+     and a passage of up to 25 words as a Back-Cover Text, to the end
+     of the list of Cover Texts in the Modified Version.  Only one
+     passage of Front-Cover Text and one of Back-Cover Text may be
+     added by (or through arrangements made by) any one entity.  If the
+     Document already includes a cover text for the same cover,
+     previously added by you or by arrangement made by the same entity
+     you are acting on behalf of, you may not add another; but you may
+     replace the old one, on explicit permission from the previous
+     publisher that added the old one.
+
+     The author(s) and publisher(s) of the Document do not by this
+     License give permission to use their names for publicity for or to
+     assert or imply endorsement of any Modified Version.
+
+  5. COMBINING DOCUMENTS
+
+     You may combine the Document with other documents released under
+     this License, under the terms defined in section 4 above for
+     modified versions, provided that you include in the combination
+     all of the Invariant Sections of all of the original documents,
+     unmodified, and list them all as Invariant Sections of your
+     combined work in its license notice, and that you preserve all
+     their Warranty Disclaimers.
+
+     The combined work need only contain one copy of this License, and
+     multiple identical Invariant Sections may be replaced with a single
+     copy.  If there are multiple Invariant Sections with the same name
+     but different contents, make the title of each such section unique
+     by adding at the end of it, in parentheses, the name of the
+     original author or publisher of that section if known, or else a
+     unique number.  Make the same adjustment to the section titles in
+     the list of Invariant Sections in the license notice of the
+     combined work.
+
+     In the combination, you must combine any sections Entitled
+     "History" in the various original documents, forming one section
+     Entitled "History"; likewise combine any sections Entitled
+     "Acknowledgements", and any sections Entitled "Dedications".  You
+     must delete all sections Entitled "Endorsements."
+
+  6. COLLECTIONS OF DOCUMENTS
+
+     You may make a collection consisting of the Document and other
+     documents released under this License, and replace the individual
+     copies of this License in the various documents with a single copy
+     that is included in the collection, provided that you follow the
+     rules of this License for verbatim copying of each of the
+     documents in all other respects.
+
+     You may extract a single document from such a collection, and
+     distribute it individually under this License, provided you insert
+     a copy of this License into the extracted document, and follow
+     this License in all other respects regarding verbatim copying of
+     that document.
+
+  7. AGGREGATION WITH INDEPENDENT WORKS
+
+     A compilation of the Document or its derivatives with other
+     separate and independent documents or works, in or on a volume of
+     a storage or distribution medium, is called an "aggregate" if the
+     copyright resulting from the compilation is not used to limit the
+     legal rights of the compilation's users beyond what the individual
+     works permit.  When the Document is included in an aggregate, this
+     License does not apply to the other works in the aggregate which
+     are not themselves derivative works of the Document.
+
+     If the Cover Text requirement of section 3 is applicable to these
+     copies of the Document, then if the Document is less than one half
+     of the entire aggregate, the Document's Cover Texts may be placed
+     on covers that bracket the Document within the aggregate, or the
+     electronic equivalent of covers if the Document is in electronic
+     form.  Otherwise they must appear on printed covers that bracket
+     the whole aggregate.
+
+  8. TRANSLATION
+
+     Translation is considered a kind of modification, so you may
+     distribute translations of the Document under the terms of section
+     4.  Replacing Invariant Sections with translations requires special
+     permission from their copyright holders, but you may include
+     translations of some or all Invariant Sections in addition to the
+     original versions of these Invariant Sections.  You may include a
+     translation of this License, and all the license notices in the
+     Document, and any Warranty Disclaimers, provided that you also
+     include the original English version of this License and the
+     original versions of those notices and disclaimers.  In case of a
+     disagreement between the translation and the original version of
+     this License or a notice or disclaimer, the original version will
+     prevail.
+
+     If a section in the Document is Entitled "Acknowledgements",
+     "Dedications", or "History", the requirement (section 4) to
+     Preserve its Title (section 1) will typically require changing the
+     actual title.
+
+  9. TERMINATION
+
+     You may not copy, modify, sublicense, or distribute the Document
+     except as expressly provided under this License.  Any attempt
+     otherwise to copy, modify, sublicense, or distribute it is void,
+     and will automatically terminate your rights under this License.
+
+     However, if you cease all violation of this License, then your
+     license from a particular copyright holder is reinstated (a)
+     provisionally, unless and until the copyright holder explicitly
+     and finally terminates your license, and (b) permanently, if the
+     copyright holder fails to notify you of the violation by some
+     reasonable means prior to 60 days after the cessation.
+
+     Moreover, your license from a particular copyright holder is
+     reinstated permanently if the copyright holder notifies you of the
+     violation by some reasonable means, this is the first time you have
+     received notice of violation of this License (for any work) from
+     that copyright holder, and you cure the violation prior to 30 days
+     after your receipt of the notice.
+
+     Termination of your rights under this section does not terminate
+     the licenses of parties who have received copies or rights from
+     you under this License.  If your rights have been terminated and
+     not permanently reinstated, receipt of a copy of some or all of
+     the same material does not give you any rights to use it.
+
+ 10. FUTURE REVISIONS OF THIS LICENSE
+
+     The Free Software Foundation may publish new, revised versions of
+     the GNU Free Documentation License from time to time.  Such new
+     versions will be similar in spirit to the present version, but may
+     differ in detail to address new problems or concerns.  See
+     `http://www.gnu.org/copyleft/'.
+
+     Each version of the License is given a distinguishing version
+     number.  If the Document specifies that a particular numbered
+     version of this License "or any later version" applies to it, you
+     have the option of following the terms and conditions either of
+     that specified version or of any later version that has been
+     published (not as a draft) by the Free Software Foundation.  If
+     the Document does not specify a version number of this License,
+     you may choose any version ever published (not as a draft) by the
+     Free Software Foundation.  If the Document specifies that a proxy
+     can decide which future versions of this License can be used, that
+     proxy's public statement of acceptance of a version permanently
+     authorizes you to choose that version for the Document.
+
+ 11. RELICENSING
+
+     "Massive Multiauthor Collaboration Site" (or "MMC Site") means any
+     World Wide Web server that publishes copyrightable works and also
+     provides prominent facilities for anybody to edit those works.  A
+     public wiki that anybody can edit is an example of such a server.
+     A "Massive Multiauthor Collaboration" (or "MMC") contained in the
+     site means any set of copyrightable works thus published on the MMC
+     site.
+
+     "CC-BY-SA" means the Creative Commons Attribution-Share Alike 3.0
+     license published by Creative Commons Corporation, a not-for-profit
+     corporation with a principal place of business in San Francisco,
+     California, as well as future copyleft versions of that license
+     published by that same organization.
+
+     "Incorporate" means to publish or republish a Document, in whole or
+     in part, as part of another Document.
+
+     An MMC is "eligible for relicensing" if it is licensed under this
+     License, and if all works that were first published under this
+     License somewhere other than this MMC, and subsequently
+     incorporated in whole or in part into the MMC, (1) had no cover
+     texts or invariant sections, and (2) were thus incorporated prior
+     to November 1, 2008.
+
+     The operator of an MMC Site may republish an MMC contained in the
+     site under CC-BY-SA on the same site at any time before August 1,
+     2009, provided the MMC is eligible for relicensing.
+
+
+ADDENDUM: How to use this License for your documents
+====================================================
+
+To use this License in a document you have written, include a copy of
+the License in the document and put the following copyright and license
+notices just after the title page:
+
+       Copyright (C)  YEAR  YOUR NAME.
+       Permission is granted to copy, distribute and/or modify this document
+       under the terms of the GNU Free Documentation License, Version 1.3
+       or any later version published by the Free Software Foundation;
+       with no Invariant Sections, no Front-Cover Texts, and no Back-Cover
+       Texts.  A copy of the license is included in the section entitled ``GNU
+       Free Documentation License''.
+
+   If you have Invariant Sections, Front-Cover Texts and Back-Cover
+Texts, replace the "with...Texts." line with this:
+
+         with the Invariant Sections being LIST THEIR TITLES, with
+         the Front-Cover Texts being LIST, and with the Back-Cover Texts
+         being LIST.
+
+   If you have Invariant Sections without Cover Texts, or some other
+combination of the three, merge those two alternatives to suit the
+situation.
+
+   If your document contains nontrivial examples of program code, we
+recommend releasing these examples in parallel under your choice of
+free software license, such as the GNU General Public License, to
+permit their use in free software.
+
+
+
+Tag Table:
+Node: Top1006
+Node: Basic configuration2178
+Node: Virtual hosts5926
+Node: MIME types11166
+Node: Process security17300
+Node: Security files22412
+Node: WebDAV31484
+Node: Error pages33557
+Node: Directory listing34196
+Node: SSL certificates37253
+Node: Log management40103
+Node: Concept index45373
+Node: GNU Free Documentation License46266
+
+End Tag Table

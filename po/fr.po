@@ -1,0 +1,618 @@
+# Messages français pour GNU concernant myserver.
+# Copyright © 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the myserver package.
+# Nicolas Provost <nprovost@quadriv.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: myserver 0.9.3\n"
+"Report-Msgid-Bugs-To: bug-myserver@gnu.org\n"
+"POT-Creation-Date: 2011-07-16 15:53+0200\n"
+"PO-Revision-Date: 2010-12-20 11:29+0100\n"
+"Last-Translator: Nicolas Provost <nprovost@quadriv.com>\n"
+"Language-Team: French <traduc@traduc.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: src/base/crypt/crypt_algo_manager.cpp:109
+#, c-format
+msgid "%s is not a registered algorithm"
+msgstr "%s n'est pas un algorithme disponible"
+
+#: src/base/pipe/pipe.cpp:164 src/conf/vhost/xml_vhost_handler.cpp:516
+msgid "Internal error"
+msgstr "Erreur interne"
+
+#: src/base/process/process_server_manager.cpp:131
+#, c-format
+msgid "Error: incomplete remote PROCESS_SERVER block, %s:%s needs a port"
+msgstr ""
+"Erreur : bloc PROCESS_SERVER distant incomplet, %s:%s nécessite un port"
+
+#: src/base/process/process_server_manager.cpp:137
+msgid "Error: incomplete PROCESS_SERVER block"
+msgstr "Erreur : bloc PROCESS_SERVER incomplet"
+
+#: src/base/process/process_server_manager.cpp:455
+#, c-format
+msgid "Cannot run process %s: Reached max number of servers"
+msgstr ""
+"Impossible d'exécuter le processus %s : nombre max. de serveurs atteint"
+
+#: src/conf/mime/xml_mime_handler.cpp:275
+#, c-format
+msgid "XmlMimeHandler: Duplicate extension: %s"
+msgstr ""
+
+#: src/conf/vhost/xml_vhost_handler.cpp:66
+#, c-format
+msgid "Protocol not defined for vhost: %s, using HTTP by default"
+msgstr ""
+"Protocole non disponible pour l'hôte virtuel : %s, HTTP retenu par défaut"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:73
+#, c-format
+msgid "The protocol \"%s\" is used but not loaded"
+msgstr "Le protocole \"%s\" est utilisé mais non chargé"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:192
+#, fuzzy
+msgid "Error while changing accesses log owner"
+msgstr ""
+"Erreur lors du changement de propriétaire du chemin des journaux des accès"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:197
+#, fuzzy
+msgid "Error while changing warnings log owner"
+msgstr "Erreur lors du changement de propriétaire des chemins des journaux"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:248
+msgid "Unexpected element in virtual host streams"
+msgstr ""
+
+#: src/conf/vhost/xml_vhost_handler.cpp:281
+#: src/conf/vhost/xml_vhost_handler.cpp:289
+#: src/conf/vhost/xml_vhost_handler.cpp:310
+#, c-format
+msgid "Error opening %s"
+msgstr "Erreur en ouverture %s"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:293
+msgid " Unrecognized log type"
+msgstr "Type de journal non reconnu"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:362
+#, c-format
+msgid "The location `%s' is registered multiple times"
+msgstr "La destination \"%s\" est enregistrée plusieurs fois"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:411
+#, fuzzy, c-format
+msgid "An invalid port was specified: %s"
+msgstr "Données de modules complémentaires non valides"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:479
+#, c-format
+msgid "Error loading mime types file: %s"
+msgstr "Erreur de chargement du fichier de types MIME : %s"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:497
+msgid "Error opening log files"
+msgstr "Erreur d'ouverture des fichiers journaux"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:506
+#, c-format
+msgid "Error initializing SSL for %s"
+msgstr "Erreur d'initialisation SSL pour %s"
+
+#: src/connections_scheduler/connections_scheduler.cpp:354
+msgid "Error initializing socket pair"
+msgstr "Erreur d'initialisation du couple de slots (sockets)"
+
+#: src/connections_scheduler/connections_scheduler.cpp:374
+msgid "Error while initializing the dispatcher thread"
+msgstr "Erreur d'initialisation du processus (thread) de distribution"
+
+#: src/connections_scheduler/listen_threads.cpp:97
+#: src/connections_scheduler/listen_threads.cpp:129
+msgid "Binding the port"
+msgstr "Association du port"
+
+#: src/connections_scheduler/listen_threads.cpp:99
+#: src/connections_scheduler/listen_threads.cpp:131
+msgid "Port was bound"
+msgstr "Port associé"
+
+#: src/connections_scheduler/listen_threads.cpp:137
+#, fuzzy
+msgid "Error while creating the IPv6 server socket"
+msgstr "Erreur de création du slot (socket) serveur"
+
+#: src/connections_scheduler/listen_threads.cpp:155
+#, c-format
+msgid "Listening on the port: %i"
+msgstr "En écoute sur le port : %i"
+
+#: src/http_handler/cgi/cgi.cpp:177
+#, c-format
+msgid "Cgi: cannot find the %s file"
+msgstr "Cgi : impossible de trouver le fichier %s"
+
+#: src/http_handler/cgi/cgi.cpp:311 src/http_handler/cgi/cgi.cpp:370
+#, c-format
+msgid "Cgi: process %i timeout"
+msgstr "Cgi : temps d'éxécution dépassé pour le processus %i"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:178
+#, c-format
+msgid "FastCGI: cannot connect to the %s process"
+msgstr "FastCGI : impossible de se connecter au processus %s"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:517
+#: src/http_handler/fastcgi/fastcgi.cpp:757
+msgid "FastCGI: internal error"
+msgstr "FastCGI : erreur interne"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:659
+msgid "FastCGI: cannot find handler for SEND"
+msgstr "FastCGI : impossible de trouver le gestionnaire SEND"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:739
+msgid "FastCGI: server timeout"
+msgstr "FastCGI : temps d'éxécution serveur dépassé"
+
+#: src/http_handler/http_dir/http_dir.cpp:372
+#, c-format
+msgid "HttpDir: pattern `%s' is not valid"
+msgstr "HttpDir : motif \"%s\" non valide"
+
+#: src/http_handler/isapi/isapi.cpp:220 src/http_handler/isapi/isapi.cpp:347
+#: src/http_handler/isapi/isapi.cpp:739 src/http_handler/isapi/isapi.cpp:746
+msgid "ISAPI: internal error"
+msgstr "ISAPI : erreur interne"
+
+#: src/http_handler/isapi/isapi.cpp:710
+msgid "ISAPI: max connections"
+msgstr "ISAPI : trop de connexions"
+
+#: src/http_handler/isapi/isapi.cpp:721
+#, c-format
+msgid "ISAPI: cannot load %s"
+msgstr "ISAPI : impossible de charger %s"
+
+#: src/http_handler/isapi/isapi.cpp:754
+msgid "ISAPI: version not supported"
+msgstr "ISAPI : version non supportée"
+
+#: src/http_handler/isapi/isapi.cpp:806
+msgid "ISAPI: cannot find entry-point"
+msgstr "ISAPI : impossible de trouver le point d'entrée"
+
+#: src/http_handler/isapi/isapi.cpp:854
+msgid "ISAPI: Not implemented"
+msgstr "ISAPI : non implémenté"
+
+#: src/http_handler/mscgi/mscgi.cpp:117
+#, c-format
+msgid "MSCGI: cannot find entry-point for %s"
+msgstr "MSCGI : impossible de trouver le point d'entrée pour %s"
+
+#: src/http_handler/scgi/scgi.cpp:156
+msgid "SCGI: internal error"
+msgstr "SCGI : erreur interne"
+
+#: src/http_handler/wincgi/wincgi.cpp:343
+msgid "WinCGI: not implemented"
+msgstr "WinCGI : non implémenté"
+
+#: src/log/log_manager.cpp:165
+#, c-format
+msgid "The %s log is shared among %i objects"
+msgstr "Le journal %s est partagé par %i objets"
+
+#: src/myserver.cpp:168
+msgid "Print the version for the application"
+msgstr "Affiche la version de l'application"
+
+#: src/myserver.cpp:170
+msgid "Specify how run the server (by default console mode)"
+msgstr "Spécifiez comment lancer le serveur (par défaut, en mode console)"
+
+#: src/myserver.cpp:172
+msgid ""
+"Specify the location (using the format protocol://resource) to use as the "
+"main log."
+msgstr ""
+"Spécifiez la destination (au format protocole://ressource) à utiliser pour "
+"le fichier journal principal."
+
+#: src/myserver.cpp:175
+msgid "Specify the file where write the PID"
+msgstr "Spécifiez le fichier où écrire le PID"
+
+#: src/myserver.cpp:177
+msgid "Specify if use a fork server"
+msgstr "Spécifiez s'il faut utiliser un serveur clôné (fork)"
+
+#: src/myserver.cpp:179
+msgid "Specify an alternative directory where look for configuration files"
+msgstr ""
+"Spécifiez un répertoire secondaire de stockage des fichiers de configuration"
+
+#: src/myserver.cpp:181
+msgid "Specify which plugins must be loaded before the server starts."
+msgstr ""
+"Spécifiez les modules complémentaires à charger avant le démarrage du "
+"serveur."
+
+#: src/myserver.cpp:458
+msgid "Cannot load specified plugins"
+msgstr "Impossible de charger les modules complémentaires spécifiés"
+
+#: src/myserver.cpp:478
+msgid "Cannot find the configuration files, be sure they exist"
+msgstr ""
+"Impossible de trouver les fichiers de configuration, vérifiez leur existence"
+
+#: src/plugin/plugins_manager.cpp:114
+msgid "Invalid plugin name in PLUGIN block."
+msgstr "Mauvais non de module complémentaire dans le bloc PLUGIN"
+
+#: src/plugin/plugins_manager.cpp:144
+msgid "Invalid plugins source"
+msgstr "Source de modules complémentaires non valide"
+
+#: src/plugin/plugins_manager.cpp:275
+msgid "Invalid plugins data specified"
+msgstr "Données de modules complémentaires non valides"
+
+#: src/plugin/plugins_manager.cpp:294
+msgid ""
+"Cannot find the plugin data, please check that the specified name and path "
+"are correct"
+msgstr ""
+"Impossible d'atteindre les données des modules, svp vérifiez que les noms et "
+"chemins sont corrects"
+
+#: src/plugin/plugins_manager.cpp:309
+#, c-format
+msgid "Cannot load plugin %s"
+msgstr "Impossible de charger le module %s"
+
+#: src/plugin/plugins_manager.cpp:345
+#, c-format
+msgid "Error loading plugin `%s'"
+msgstr "Erreur de chargement du module \"%s\""
+
+#: src/plugin/plugins_manager.cpp:357 src/plugin/plugins_manager.cpp:373
+#: src/plugin/plugins_manager.cpp:389 src/plugin/plugins_manager.cpp:402
+#: src/plugin/plugins_manager.cpp:419 src/plugin/plugins_manager.cpp:432
+#: src/plugin/plugins_manager.cpp:452 src/plugin/plugins_manager.cpp:468
+#, c-format
+msgid "Error loading plugin `%s': invalid plugin.xml"
+msgstr "Erreur de chargement du module \"%s\" : fichier plugin.xml non valide"
+
+#: src/plugin/plugins_manager.cpp:498 src/plugin/plugins_manager.cpp:510
+#, c-format
+msgid "Error pre-loading plugin `%s'"
+msgstr "Erreur de pré-chargement du module \"%s\""
+
+#: src/plugin/plugins_manager.cpp:519
+#, fuzzy, c-format
+msgid "Error loading plugin `%s', the license is not GPL"
+msgstr "Erreur de chargement du module \"%s\""
+
+#: src/plugin/plugins_manager.cpp:545 src/plugin/plugins_manager.cpp:636
+#, c-format
+msgid "Missing plugin dependence `%s' --> `%s'"
+msgstr "Dépendance de module manquante \"%s\"  --> \"%s\""
+
+#: src/plugin/plugins_manager.cpp:577 src/plugin/plugins_manager.cpp:649
+#, c-format
+msgid "Plugin `%s' not compatible with this version"
+msgstr "Module \"%s\" non compatible avec cette version"
+
+#: src/plugin/plugins_manager.cpp:685
+#, c-format
+msgid "Loaded plugin `%s'"
+msgstr "Module chargé \"%s\""
+
+#: src/protocol/control/control_protocol.cpp:307
+msgid "Control: specified version not supported"
+msgstr "Contrôle : version spécifiée non supportée"
+
+#: src/protocol/control/control_protocol.cpp:572
+#: src/protocol/control/control_protocol.cpp:613
+#: src/protocol/control/control_protocol.cpp:621
+#: src/protocol/control/control_protocol.cpp:633
+#: src/protocol/control/control_protocol.cpp:668
+#: src/protocol/control/control_protocol.cpp:680
+msgid "Control: internal error"
+msgstr "Contrôle : erreur interne"
+
+#: src/protocol/gopher/engine.cpp:91
+msgid "Invalid requested Path\n"
+msgstr "Chemin demandé non valide\n"
+
+#: src/protocol/http/webdav/webdav.cpp:276
+#: src/protocol/http/webdav/webdav.cpp:369
+#: src/protocol/http/webdav/webdav.cpp:454
+#: src/protocol/http/webdav/webdav.cpp:503
+#: src/protocol/http/webdav/webdav.cpp:567
+#: src/protocol/http/webdav/webdav.cpp:674
+#: src/protocol/http/webdav/webdav.cpp:733
+msgid "WebDAV is not enabled on this host"
+msgstr ""
+
+#: src/protocol/http/http.cpp:179 src/protocol/http/http.cpp:1289
+msgid "HTTP: socket error"
+msgstr "HTTP : erreur de slot (socket)"
+
+#: src/protocol/http/http.cpp:302 src/protocol/http/http.cpp:537
+#: src/protocol/http/http.cpp:726 src/protocol/http/http.cpp:1182
+#: src/protocol/http/http.cpp:1619
+msgid "HTTP: internal error"
+msgstr "HTTP : erreur interne"
+
+#: src/protocol/http/http.cpp:325
+msgid "HTTP: error accessing the security file"
+msgstr "HTTP : erreur d'accès au fichier de sécurité"
+
+#: src/protocol/http/http.cpp:593
+msgid ""
+"HTTP: internal error, when using digest auth only a1 and cleartext passwords "
+"can be used"
+msgstr ""
+"HTTP : erreur interne, lors de l'authentification par hâchage (digest), "
+"seuls les mots de passe en clair et \"a1\" sont utilisables"
+
+#: src/protocol/http/http.cpp:1001
+#, c-format
+msgid "Cannot find host %s on %s (port %i)"
+msgstr ""
+
+#: src/protocol/http/http.cpp:1387
+#, c-format
+msgid "HTTP: The specified error page: %s does not exist"
+msgstr "HTTP : la page d'erreur spécifiée %s n'existe pas"
+
+#: src/protocol/http/http_data_handler.cpp:34
+msgid "HttpDataHandler: using the base interface!"
+msgstr "HttpDataHandler : interface de base utilisée !"
+
+#: src/server/clients_thread.cpp:167 src/server/server.cpp:229
+#, c-format
+msgid "Bad alloc: %s"
+msgstr "Mauvaise allocation : %s"
+
+#: src/server/server.cpp:131
+msgid "Error loading the socket library"
+msgstr "Erreur de chargement de la librairie de sockets"
+
+#: src/server/server.cpp:178
+msgid "Initializing server configuration..."
+msgstr "Initialisation de la configuration serveur..."
+
+#: src/server/server.cpp:182 src/server/server.cpp:188
+#: src/server/server.cpp:195 src/server/server.cpp:204
+msgid "The server could not be started"
+msgstr "Le serveur n'a pas pu être démarré"
+
+#: src/server/server.cpp:199
+#, fuzzy, c-format
+msgid "Loading server configuration from %s..."
+msgstr "Chargement de la configuration serveur..."
+
+#: src/server/server.cpp:211
+#, c-format
+msgid "Using gid: %s"
+msgstr "Gid utilisé : %s"
+
+#: src/server/server.cpp:214
+#, c-format
+msgid "Using uid: %s"
+msgstr "Uid utilisé : %s"
+
+#: src/server/server.cpp:216
+msgid "Server is ready!"
+msgstr "Serveur prêt !"
+
+#: src/server/server.cpp:219
+msgid "Press Ctrl-C to terminate its execution"
+msgstr "Pressez Ctrl-C pour terminer l'éxécution"
+
+#: src/server/server.cpp:233
+#, c-format
+msgid "Error: %s"
+msgstr "Erreur : %s"
+
+#: src/server/server.cpp:243
+msgid "Server terminated"
+msgstr "Exécution serveur terminée"
+
+#: src/server/server.cpp:258
+#, c-format
+msgid "Host name: %s"
+msgstr "Nom d'hôte : %s"
+
+#: src/server/server.cpp:267
+msgid "Error reading IP list"
+msgstr "Erreur de lecture de la liste d'IP"
+
+#: src/server/server.cpp:271
+#, c-format
+msgid "IP: %s"
+msgstr "IP : %s"
+
+#: src/server/server.cpp:273
+#, c-format
+msgid "Detected %i CPUs"
+msgstr "%i processeurs détectés"
+
+#: src/server/server.cpp:297
+#, fuzzy, c-format
+msgid "Loading MIME types from %s..."
+msgstr "Chargement des types MIME..."
+
+#: src/server/server.cpp:307
+#, c-format
+msgid "Error creating the MIME types handler: %s"
+msgstr "Erreur de création du gestionnaire de types MIME : %s"
+
+#: src/server/server.cpp:312
+#, c-format
+msgid "Using %i MIME types"
+msgstr "%i types MIME utilisés"
+
+#: src/server/server.cpp:314
+msgid "Error while loading MIME types"
+msgstr "Erreur de chargement des types MIME"
+
+#: src/server/server.cpp:318
+#, c-format
+msgid "Creating thread %i..."
+msgstr "Création du processus %i..."
+
+#: src/server/server.cpp:322
+msgid "Error while creating thread"
+msgstr "Erreur de création du processus"
+
+#: src/server/server.cpp:326
+#, c-format
+msgid "Thread %i created"
+msgstr "Processus %i créé"
+
+#: src/server/server.cpp:348
+#, c-format
+msgid "Error creating the virtual hosts handler: %s"
+msgstr "Erreur de création du gestionnaire d'hôtes virtuels : %s"
+
+#: src/server/server.cpp:359
+#, fuzzy, c-format
+msgid "Loading virtual hosts from %s..."
+msgstr "Erreur de création du gestionnaire d'hôtes virtuels : %s"
+
+#: src/server/server.cpp:365
+#, c-format
+msgid "Error loading the vhost configuration file %s"
+msgstr "Erreur de chargement du fichier de configuration des hôtes virtuels %s"
+
+#: src/server/server.cpp:390
+msgid "Error while loading plugins"
+msgstr "Erreur durant le chargement des modules"
+
+#: src/server/server.cpp:482
+#, fuzzy, c-format
+msgid "Reloading MIME types from %s"
+msgstr "Rechargement des types MIME"
+
+#: src/server/server.cpp:487 src/server/server.cpp:526
+msgid "Reloaded"
+msgstr "Rechargé"
+
+#: src/server/server.cpp:505
+msgid "Rebooting..."
+msgstr "Redémarrage..."
+
+#: src/server/server.cpp:705
+msgid "Stopping threads"
+msgstr "Arrêt des processus"
+
+#: src/server/server.cpp:731
+msgid "Threads stopped"
+msgstr "Processus arrêtés"
+
+#: src/server/server.cpp:733
+msgid "Cleaning memory"
+msgstr "Nettoyage de la mémoire"
+
+#: src/server/server.cpp:768
+msgid "MyServer has stopped"
+msgstr "MyServer est arrêté"
+
+#: src/server/server.cpp:817 src/server/server.cpp:829
+#, c-format
+msgid "Error while loading the %s configuration file"
+msgstr "Erreur de chargement du fichier de configuration %s"
+
+#: src/server/server.cpp:1447
+msgid "Error setting additional groups"
+msgstr "Erreur d'ajout de groupes supplémentaires"
+
+#: src/server/server.cpp:1450
+msgid "Error setting gid"
+msgstr "Erreur de positionnement du gid"
+
+#: src/server/server.cpp:1464
+msgid "Error setting uid"
+msgstr "Erreur de positionnement de l'uid"
+
+#: src/server/server.cpp:1506
+msgid "Rebooting"
+msgstr "Redémarrage en cours"
+
+#: src/server/server.cpp:1526
+msgid "The server could not be restarted"
+msgstr "Le serveur n'a pas pu être redémarré"
+
+#: src/server/server.cpp:1532
+msgid "Restarted"
+msgstr "Redémarré"
+
+#: src/server/server.cpp:1656
+msgid "Error creating thread"
+msgstr "Erreur de création du processus"
+
+#~ msgid "internal error"
+#~ msgstr "erreur interne"
+
+#~ msgid "Specified invalid port %s"
+#~ msgstr "Port spécifié non valide %s"
+
+#~ msgid "Cgi: Executable file not specified"
+#~ msgstr "Cgi : fichier éxécutable non précisé"
+
+#~ msgid "Cgi: internal error"
+#~ msgstr "Cgi : erreur interne"
+
+#~ msgid "HttpDir: internal error"
+#~ msgstr "HttpDir : erreur interne"
+
+#~ msgid "HttpFile: error accessing file %s"
+#~ msgstr "HttpFile : erreur d'accès au fichier %s"
+
+#~ msgid "HttpFile: internal error"
+#~ msgstr "HttpFile : erreur interne"
+
+#~ msgid "HttpFile: cannot delete file %s"
+#~ msgstr "HttpFile : impossible de supprimer le fichier %s"
+
+#~ msgid "MSCGI: cannot load %s"
+#~ msgstr "MSCGI : impossible de charger %s"
+
+#~ msgid "Msgi: internal error"
+#~ msgstr "Msgi : erreur interne"
+
+#~ msgid "SCGI: error connecting to the process %s"
+#~ msgstr "SCGI : erreur de connexion au processus %s"
+
+#~ msgid "WinCGI: error executing %s"
+#~ msgstr "WinCGI : erreur d'éxécution %s"
+
+#~ msgid "WinCGI: internal error"
+#~ msgstr "WinCGI : erreur interne"
+
+#~ msgid "HTTP: cannot get permissions for %s"
+#~ msgstr "HTTP : impossible d'obtenir les permissions sur \"%s\""
+
+#~ msgid "HTTP: recursive error"
+#~ msgstr "HTTP : erreur en récursion"
+
+#~ msgid "Http: internal error"
+#~ msgstr "Http : erreur interne"
+
+#~ msgid "Error : %s"
+#~ msgstr "Erreur : %s"

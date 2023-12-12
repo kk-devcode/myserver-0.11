@@ -1,0 +1,341 @@
+%{
+#include "../../../include/protocol/ftp/ftp_common.h"
+#include <string>
+#include "../../../include/protocol/ftp/ftp_parser.h"
+#include <ctype.h>
+%}
+
+%option reentrant
+%option bison-bridge
+%option noyywrap
+/* %option header-file= "../../../include/protocol/ftp/ftp_lexer.h" */
+%option case-insensitive
+%option bison-locations
+
+%s SHORT_STRING
+%s STRING
+%s IPV4_ADDR
+
+%%
+      /* Login */
+<INITIAL>USER	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return USER_FTP_COMMAND;
+	}
+<INITIAL>PASS	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return PASS_FTP_COMMAND;
+	}
+      /* Logout */
+<INITIAL>QUIT	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return QUIT_FTP_COMMAND;
+	}
+	/* Transfer parameters */
+<INITIAL>PORT	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(IPV4_ADDR);
+		return PORT_FTP_COMMAND;
+	}
+<INITIAL>PASV	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return PASV_FTP_COMMAND;
+	}
+<INITIAL>MODE	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+    BEGIN(SHORT_STRING);
+		return MODE_FTP_COMMAND;
+	}
+<INITIAL>TYPE	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(SHORT_STRING);
+		return TYPE_FTP_COMMAND;
+	}
+<INITIAL>STRU	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return STRU_FTP_COMMAND;
+	}
+<INITIAL>ABOR	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return ABOR_FTP_COMMAND;
+	}
+<INITIAL>CWD	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 3;
+		return CWD_FTP_COMMAND;
+	}
+<INITIAL>CDUP	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return CDUP_FTP_COMMAND;
+	}
+<INITIAL>PWD	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 3;
+		return PWD_FTP_COMMAND;
+	}
+
+      /* File action commands */
+<INITIAL>REST	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return REST_FTP_COMMAND;
+	}
+<INITIAL>RETR	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return RETR_FTP_COMMAND;
+	}
+<INITIAL>LIST	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return LIST_FTP_COMMAND;
+	}
+<INITIAL>NLST	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return NLST_FTP_COMMAND;
+	}
+<INITIAL>STOR	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return STOR_FTP_COMMAND;
+	}
+<INITIAL>STOU	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return STOU_FTP_COMMAND;
+	}
+<INITIAL>DELE	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return DELE_FTP_COMMAND;
+	}
+<INITIAL>APPE	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return APPE_FTP_COMMAND;
+	}
+<INITIAL>MKD	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 3;
+		BEGIN(STRING);
+		return MKD_FTP_COMMAND;
+	}
+<INITIAL>RMD	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 3;
+		BEGIN(STRING);
+		return RMD_FTP_COMMAND;
+	}
+<INITIAL>RNFR	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return RNFR_FTP_COMMAND;
+	}
+<INITIAL>RNTO	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return RNTO_FTP_COMMAND;
+	}
+	/* Informational commands */
+<INITIAL>HELP	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return HELP_FTP_COMMAND;
+	}
+<INITIAL>SYST	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return SYST_FTP_COMMAND;
+	}
+<INITIAL>STAT	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return STAT_FTP_COMMAND;
+	}
+	/* Miscellaneous commands*/
+<INITIAL>NOOP	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return NOOP_FTP_COMMAND;
+	}
+	/*add rfc 775 cmds(used by win32 ftp client)*/
+<INITIAL>XMKD	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return MKD_FTP_COMMAND;
+	}
+<INITIAL>XRMD	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		BEGIN(STRING);
+		return RMD_FTP_COMMAND;
+	}
+<INITIAL>XPWD	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return PWD_FTP_COMMAND;
+	}
+<INITIAL>XCUP	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return CDUP_FTP_COMMAND;
+	}
+	/*SITE commands*/
+<INITIAL>SITE	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return SITE_FTP_COMMAND;// do the same as help
+	}
+<INITIAL>CHMOD	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return CHMOD_FTP_COMMAND;
+	}
+<INITIAL>UTIME	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+		return UTIME_FTP_COMMAND;
+	}
+	/*RFC 3659 commands*/
+<INITIAL>SIZE	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += 4;
+    BEGIN(STRING);
+		return SIZE_FTP_COMMAND;
+	}
+<IPV4_ADDR>[,]	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += yyleng;
+		if ( *yytext == ',' )
+			return ',';
+	}
+<IPV4_ADDR>[[:digit:]]+	{
+		yylval->m_nInt = atoi(yytext);
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += yyleng;
+		return NUMBER_FTP_ARG;
+	}
+\r\n	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_line = yylloc->first_line + 1;
+		yylloc->last_column = 0;
+		BEGIN(INITIAL);
+		return CRLF_FTP_SEP;
+	}
+[ ]+	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += yyleng;
+		return SPACE_FTP_SEP;
+	}
+
+<SHORT_STRING>[[:alnum:][:punct:]][[:alnum:][:punct:] ]*	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += yyleng;
+
+		if ( yyleng == 1 )//one char
+			return tolower(*yytext);
+		else
+		{
+			memset(yylval->m_szStr, 0, PARSER_STR_LEN);
+             strncpy(yylval->m_szStr, yytext, yyleng);
+			yylloc->first_line = yylloc->last_line;
+			yylloc->first_column = yylloc->last_column;
+			yylloc->last_column += yyleng;
+			return STRING_FTP_ARG;
+		}
+	}
+
+<STRING>[[:alnum:][:punct:]][[:alnum:][:punct:] ]*	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += yyleng;
+		memset(yylval->m_szStr, 0, PARSER_STR_LEN);
+           strncpy(yylval->m_szStr, yytext, yyleng);
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += yyleng;
+		return STRING_FTP_ARG;
+	}
+
+<INITIAL,STRING>[[:alnum:][:punct:]]+	{
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += yyleng;
+
+    BEGIN(STRING);
+
+		memset(yylval->m_szStr, 0, PARSER_STR_LEN);
+      strncpy(yylval->m_szStr, yytext, yyleng);
+		yylloc->first_line = yylloc->last_line;
+		yylloc->first_column = yylloc->last_column;
+		yylloc->last_column += yyleng;
+		return STRING_FTP_ARG;
+	}
+%%

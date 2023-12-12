@@ -1,0 +1,102 @@
+@c -*-texinfo-*-
+@c GNU MyServer
+@c
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+@c 2011 Free Software Foundation, Inc.
+@c
+@c This program is free software; you can redistribute it and/or modify
+@c it under the terms of the GNU General Public License as published by
+@c the Free Software Foundation; either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c This program is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with this program.  If not, see <http://www.gnu.org/licenses/>.
+@section Configuration files
+The MyServer configuration is done using three different XML files:
+
+@itemize
+@item @file{myserver.xml}
+It contains the main myserver configuration.  Almost all settings here
+can be redefined locally for virtual hosts or directories.
+@item @file{MIMEtypes.xml}
+It contains the default MIME types configuration.  It can be redefined
+for any virtual host.
+@item @file{virtualhosts.xml}
+This file defines the different virtual hosts used by MyServer.
+Virtual host here is not used properly, as this file is used to define
+sites on a protocol different than HTTP/HTTPS where there are not
+virtual hosts, for example FTP.
+@end itemize
+
+These files can exist in different locations, they are looked in the
+following order:
+@enumerate
+@item Current working directory.
+@item Personal directory, ~/.myserver/.
+@item Global scope inside /etc/myserver.
+@end enumerate
+
+It is possible to specify a different directory where looks for
+configuration files by the @code{--cfgdir} argument to the myserver
+process.  In case a path is specified, then the configuration files
+are looked exclusively in this directory.
+
+@subsection Alternative handlers
+Plugins are allowed to install new handlers to read the configuration
+from other sources.  It is done changing the value of the variables
+@code{server.vhost_handler} and @code{server.server.mime_handler},
+respectively to use a different handler for the virtual hosts and for
+the MIME types.  If no value is specified then the value @code{xml}
+is used.
+
+@section Server administrator
+CGI scripts can get the server administrator e-mail and show them to
+the user (through the SERVER_ADMIN environment variable). 
+It is defined trought the @code{server.admin} variable, that can be
+set in the global configuration file or for virtual host.
+
+@section Temporary files position
+There can be need for the server to save temporary files as a form of
+inter-process communication.
+It is possible to configure the directory where temporary files are
+stored trought the @code{server.temp_directory} variable inside the
+main configuration file.
+Operations on disk are much slower than read or write directly from
+the primary memory.  To solve this problem under GNU/Linux you can
+think about use virtual memory instead of a persistent storage device
+to store files.
+
+It can be done, by the root user, as:
+
+@example
+# mount -t tmpfs -o size=256m tmpfs /tmp/tmpfs
+@end example
+
+The previous command mount a portion of memory, 256M, on the
+/tmp/tmpfs and it can be used as a normal file system.
+At this point, @code{server.temp_directory} shall be set to
+@file{/tmp/tmpfs} to benefit from it.
+Files saved on the primary memory are not persistent between reboots,
+introducing another level of security as temporary data will not be
+saved on the server.
+
+@section Connections timeout
+Protocols like FTP or HTTP/1.1 support keep-alive connections, in
+other words the connection is kept alive between requests to avoid a
+different connection to the server on every request.
+MyServer performances are not affected by the number of active
+connections but if they are not controlled, they can reach the maximum
+number of allowed connections without give the possibility to new
+connections that really want to request a resource to be
+estabilished.
+Active connections are closed after a fixed amount of time has passed
+without any activity.
+The amount of time, before an inactive connection is closed, is
+configured trought the @code{server.connection_timeout} value defined
+in the global configuration file.  This value is specified in
+seconds.

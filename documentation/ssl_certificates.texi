@@ -1,0 +1,80 @@
+@c -*-texinfo-*-
+@c GNU MyServer
+@c
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+@c 2011 Free Software Foundation, Inc.
+@c
+@c This program is free software; you can redistribute it and/or modify
+@c it under the terms of the GNU General Public License as published by
+@c the Free Software Foundation; either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c This program is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+@section Brief notes on data encryption
+The data encryption is used to protect the data that is sent between
+the client and the server.  There are two types of algorithm: symmetric
+and asymmetric data encryption algorithms.  The difference between the
+two types of algorithm is that for the symmetric algorithms the same
+key is used both for encryption and decryption.  These algorithms are
+not used by servers with a potentially large number of clients because
+the data captured can be decrypted by any client that know the key and
+because the key needs to be distribute in a safe manner not
+distributing it on a large network like Internet.
+The asymmetric algorithms work in a different way, the data encrypted
+with a key can be decrypted only with the other key and vice-versa.
+Anyone know the public key but only the owner knows the private one.
+In this way the key owner do not have to distribute the key only to
+know clients but he can distributes it to a large scale network.
+
+@section How create SSL certificates with GNU TLS
+A certificate is needed to certify your identity through a
+CA (Certification Authority).  You can use a certificate without
+register it to third party CA, it is called self-signed certificate.
+You can find all the necessary tools to create certificates in the
+GNU TLS command line tools.  Look here for more information:
+@url{http://www.gnu.org/software/gnutls/}.
+
+To generate a private key/self signed certificate couple you will need
+to execute these two commands:
+
+@example
+certtool --generate-privkey --outfile cert.key
+certtool --generate-self-signed --load-privkey cert.key \
+         --outfile cert.pem
+@end example
+
+@section How use certificates in MyServer
+To configure certificates in MyServer you have to put the two files:
+@code{cert.key}, @code{cert.pem} in the MyServer certificates
+directory.
+
+To configure a HTTPS host that will use the created certificate, add
+the following lines in the @file{virtualhosts.xml} file:
+
+@example
+<VHOST>
+  <NAME>Every SSL connection</NAME>
+  <PORT>443</PORT>
+  <SSL_PRIVATEKEY>certificates/cert.key</SSL_PRIVATEKEY>
+  <SSL_CERTIFICATE>certificates/cert.pem</SSL_CERTIFICATE>
+  <PROTOCOL>HTTPS</PROTOCOL>
+  <DOCROOT>web</DOCROOT>
+  <SYSROOT>system</SYSROOT>
+    <ACCESSLOG>
+      <STREAM location="file://logs/myServer.log" cycle="1048576"/>
+	  </ACCESSLOG>
+    <WARNINGLOG>
+      <STREAM location="file://logs/myServer.err" cycle="1048576"/>
+    </WARNINGLOG>
+</VHOST>
+@end example
+
+Take a look at the @pxref{Virtual hosts} documentation to get more
+information about other tags.

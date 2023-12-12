@@ -1,0 +1,148 @@
+@c -*-texinfo-*-
+@c GNU MyServer
+@c
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+@c 2011 Free Software Foundation, Inc.
+@c
+@c This program is free software; you can redistribute it and/or modify
+@c it under the terms of the GNU General Public License as published by
+@c the Free Software Foundation; either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c This program is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with this program.  If not, see <http://www.gnu.org/licenses/>.
+Under POSIX it is possible to change the MyServer process user identifier
+and group identifier after it has bound the necessary ports (only the
+root user can bind ports < 1024).
+
+To specify a different process user id (PID), you must specify it in
+the @file{myserver.xml} file as:
+
+@example
+<DEFINE name="server.uid" value="UID" />
+@end example
+
+Differently, to change the process group id (GID), the configuration
+line to use is:
+
+@example
+<DEFINE name="server.gid" value="GID" />
+@end example
+
+When one of these features is used, MyServer will not use the
+auto-reboot because it will not be possible to get back old
+permissions.
+
+@section CGI processes.
+It is possible to run CGI processes using a different uid/gid.  It can
+be done defining the ``cgi.uid'' and ``cgi.gid'' values in a
+configuration file.  It can be specified at any configuration level.
+
+These directives can be used in a security file to force the execution
+of the new process with both uid and gid to 1000.
+@example
+<DEFINE name="cgi.uid" value="1000" />
+<DEFINE name="cgi.gid" value="1000" />
+@end example
+
+It is also possible to specify a new root directory location using the
+cgi.chroot attribute:
+
+@example
+<DEFINE name="cgi.chroot" value="/some/where" />
+@end example
+
+@section Fork Server
+In a POSIX environment the @code{fork} syscall is used to execute new
+processes.  It clones the caller process keeping any open file or
+connection in the child process too.  To avoid this problem a fork
+server is present in MyServer.
+The communication between the MyServer process and the
+fork server is done trought a socket.  When MyServer wants to execute
+a new process two connections are opened to the fork server, for
+the stdin and stdout streams, and the fork server will fork itself and
+execute the process using these connections as its I/O streams.
+
+It is not configurable in any configuration file as the MyServer
+process is forked to create it before any file or connection is
+active.
+
+It is enabled passing the @code{-f} switch to the myserver process.
+
+If the MyServer main process is configured to change its uid/gid after
+its initialization, it is the only way to spawn new processes with
+uid/gid different than the MyServer process.
+
+@section FastCGI/SCGI servers
+By default, FastCGI and SCGI servers are lazily initialized by
+MyServer on the first request to a resource that is handled trought
+these protocols.  In this case MyServer will initialize it using a
+random TCP port.
+There may be cases where a different configuration is needed and it is
+done using the @code{PROCESS_SERVER} directive inside the
+@file{myserver.xml} file.
+
+A @code{PROCESS_SERVER} entry makes it possible to access a specific
+FastCGI/SCGI configuration inside MIME types by its name.
+
+@example
+<!-- Inside myserver.xml.  -->
+<DEFINE name="server.process_servers">
+  <DEFINE server="/opt/bin/fastcgi_server" domain="fastcgi"
+          host="localhost" port="2010" local="yes" uid="1000"
+          chroot="/chroot" gid="1000"/>
+</DEFINE>
+@end example
+
+In the previous example the FastCGI server
+@code{/opt/bin/fastcgi_server} is created.  The @code{domain} must be
+"fastcgi" or "scgi", depending on the specific protocol to use.
+@code{local} specifies if the server is handled by myserver or it is
+already running; in the former case, myserver will simply access and
+use it.
+If the server is not local then the @code{server} is a simple label
+that can be used by a MIME type trought @code{param} to access it.
+
+It is possible to specify a different uid/gid for the local server
+process and don't maintain the original myserver process privileges.
+It can be done using the @code{uid} and @code{gid} elements.
+
+Also, it is possible to use a different root directory, mapping the
+@file{/} path to what is specied in the @code{chroot} attribute.
+Any file lookup can't go upper what is specied in the chroot.  Pay
+attention that any path specified in @code{server} must be relative to
+the new chroot.
+
+The following code, declare an already running FastCGI server and
+registers it on the @code{fcgi} extension:
+
+@example
+<DEFINE name="process_servers.list">
+  <DEFINE server="a_remote_server" domain="fastcgi" host="foo" port="2010"
+          local="no"/>
+</DEFINE>
+
+<!-- Inside MIMEtypes.xml.  -->
+<MIME mime="text/html" handler="RUNFASTCGI" param="a_remote_server">
+      <EXTENSION value="fcgi"/>
+</MIME>
+@end example
+
+
+@subsection FastCGI X-Sendfile directive
+The X-Sendfile directive can be used by FastCGI servers to instruct
+the web server to ignore any content but send the file specified in
+the X-Sendfile header.  It is much faster to transfer static contents
+and avoid an additional step from the FastCGI server to the web
+server.
+
+Since the FastCGI X-Sendfile can ask any file to be accessed
+statically, this feature is not considered safe you must force it
+manually, in can be done on a virtual hosts basis.
+It is done trough the @code{fastcgi.sendfile.allow} variable, to
+enable X-Sendfile set its value to @code{YES}.

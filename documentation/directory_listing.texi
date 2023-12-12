@@ -1,0 +1,106 @@
+@c -*-texinfo-*-
+@c GNU MyServer
+@c
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+@c 2011 Free Software Foundation, Inc.
+@c
+@c This program is free software; you can redistribute it and/or modify
+@c it under the terms of the GNU General Public License as published by
+@c the Free Software Foundation; either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c This program is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+@section Directory Listing
+When a resource mapped to a local directory is requested, MyServer
+shows its content like an usual file manager does.
+
+
+@subsection Default files
+In the @file{myserver.xml} main configuration or in the
+@file{virtualhosts.xml} file, it is possible to set a list of default
+file names to use instead of the directory content.
+
+Default file names are defined using a list called
+@code{http.default_file} and they are checked in the specified order
+until one is found.  If the file can't be found in the directory then
+the directory content is listed.
+
+@example
+<DEFINE name="http.default_file">
+        <DEFINE value="default.html"/>
+        <DEFINE value="default.htm"/>
+        <DEFINE value="index.html"/>
+        <DEFINE value="index.htm"/>
+</DEFINE>
+@end example
+
+The previous lines define the order of files that are checked by the
+web server when a directory is requested.
+For example, given the previous configuration and a request to the
+@file{http://foo/bar/} resource, where @file{bar/} is mapped to a
+local directory, the server will look for these files in order:
+
+@example
+http://foo/bar/default.htm
+http://foo/bar/index.htm
+http://foo/bar/default.html
+http://foo/bar/index.html
+@end example
+
+If that resources don't exist then the content of @file{bar/} is
+listed.
+
+@subsection Directory listing columns
+When the directory content is listed, by default MyServer shows the
+file name, last modified time and file size.  This default bahaviour
+can be changed redefining the @code{http.dir.format} value.
+
+It can be redefined in the local security file, in the virtual host or
+in the global server configuration.
+Its value is a formatting string, columns are showed in the same order
+that they are specified.
+
+@itemize
+@item %f
+specifies the file name.
+@item %t
+specifies the file last modified time.
+@item %s
+specifies the file size.
+@end itemize
+
+For example, the @code{%f%s} value displays the file name followed
+by its size, while @code{%f%t} displays the file name and its last
+modified time.
+
+@subsection Directory listing layout
+You can change the layout of the directory browsing page. The line
+below, in @file{myserver.xml}, points to the CSS file used to
+configure the layout for the browsing directory pages:
+
+@example
+  <DEFINE name="http.dir.css" value="/sys/css/browsestyle.css" />
+@end example
+
+@subsection Ignore entries
+It is possible to ignore some files to be listed from the final
+output.  It is done using the @code{http.dir.ignore} regular
+expression that can be specified at any level.
+
+Pay attention, this directive does not change the file visibility, so
+a direct request to the entries that are part of the mask will have
+the same effect as if this directive is not specified.
+
+In the following example, the file @file{hidden} is not included in
+the directory listing.
+
+@example
+  <DEFINE name="http.dir.ignore" value="hidden" />
+@end example

@@ -1,0 +1,614 @@
+# Vietnamese translation for MyServer.
+# Copyright © 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the myserver package.
+# Clytie Siddall <clytie@riverland.net.au>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: myserver 0.9.3\n"
+"Report-Msgid-Bugs-To: bug-myserver@gnu.org\n"
+"POT-Creation-Date: 2011-07-16 15:53+0200\n"
+"PO-Revision-Date: 2010-10-04 22:07+1030\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.8\n"
+
+#: src/base/crypt/crypt_algo_manager.cpp:109
+#, c-format
+msgid "%s is not a registered algorithm"
+msgstr "%s không phải là một thuật toán được đăng ký"
+
+#: src/base/pipe/pipe.cpp:164 src/conf/vhost/xml_vhost_handler.cpp:516
+msgid "Internal error"
+msgstr "Lỗi nội bộ"
+
+#: src/base/process/process_server_manager.cpp:131
+#, c-format
+msgid "Error: incomplete remote PROCESS_SERVER block, %s:%s needs a port"
+msgstr "Lỗi: khối PROCESS_SERVER từ xa không hoàn toàn, %s:%s yêu cầu một cổng"
+
+#: src/base/process/process_server_manager.cpp:137
+msgid "Error: incomplete PROCESS_SERVER block"
+msgstr "Lỗi: khối PROCESS_SERVER không hoàn toàn"
+
+#: src/base/process/process_server_manager.cpp:455
+#, c-format
+msgid "Cannot run process %s: Reached max number of servers"
+msgstr "Không thể chạy tiến trình %s: đã tới số tối đa các trình phục vụ"
+
+#: src/conf/mime/xml_mime_handler.cpp:275
+#, c-format
+msgid "XmlMimeHandler: Duplicate extension: %s"
+msgstr ""
+
+#: src/conf/vhost/xml_vhost_handler.cpp:66
+#, c-format
+msgid "Protocol not defined for vhost: %s, using HTTP by default"
+msgstr ""
+"Chưa xác định giao thức cho máy ảo (vhost): %s, đang sử dụng HTTP theo mặc "
+"định"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:73
+#, c-format
+msgid "The protocol \"%s\" is used but not loaded"
+msgstr "Giao thức « %s » được sử dụng mà không phải được nạp"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:192
+#, fuzzy
+msgid "Error while changing accesses log owner"
+msgstr ""
+"Gặp lỗi trong khi thay đổi chủ sở hữu của vị trí sổ theo dõi quyền truy cập"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:197
+#, fuzzy
+msgid "Error while changing warnings log owner"
+msgstr "Gặp lỗi trong khi thay đổi chủ sở hữu của vị trí sổ theo dõi"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:248
+msgid "Unexpected element in virtual host streams"
+msgstr ""
+
+#: src/conf/vhost/xml_vhost_handler.cpp:281
+#: src/conf/vhost/xml_vhost_handler.cpp:289
+#: src/conf/vhost/xml_vhost_handler.cpp:310
+#, c-format
+msgid "Error opening %s"
+msgstr "Lỗi mở %s"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:293
+msgid " Unrecognized log type"
+msgstr " Không nhận ra loại sổ theo dõi"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:362
+#, c-format
+msgid "The location `%s' is registered multiple times"
+msgstr "Vị trí « %s » được đăng ký nhiều lần"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:411
+#, fuzzy, c-format
+msgid "An invalid port was specified: %s"
+msgstr "Sai xác định dữ liệu phần bổ sung"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:479
+#, c-format
+msgid "Error loading mime types file: %s"
+msgstr "Gặp lỗi khi nạp tập tin các dạng MIME: %s"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:497
+msgid "Error opening log files"
+msgstr "Gặp lỗi khi mở tập tin theo dõi"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:506
+#, c-format
+msgid "Error initializing SSL for %s"
+msgstr "Gặp lỗi khi sơ khởi SSL cho %s"
+
+#: src/connections_scheduler/connections_scheduler.cpp:354
+msgid "Error initializing socket pair"
+msgstr "Gặp lỗi khi sơ khởi cặp ổ cắm"
+
+#: src/connections_scheduler/connections_scheduler.cpp:374
+msgid "Error while initializing the dispatcher thread"
+msgstr "Gặp lỗi khi sơ khởi nhánh của trình điều vận"
+
+#: src/connections_scheduler/listen_threads.cpp:97
+#: src/connections_scheduler/listen_threads.cpp:129
+msgid "Binding the port"
+msgstr "Đang đóng kết cổng"
+
+#: src/connections_scheduler/listen_threads.cpp:99
+#: src/connections_scheduler/listen_threads.cpp:131
+msgid "Port was bound"
+msgstr "Cổng đã được đóng kết"
+
+#: src/connections_scheduler/listen_threads.cpp:137
+#, fuzzy
+msgid "Error while creating the IPv6 server socket"
+msgstr "Gặp lỗi khi tạo ổ cắm trình phục vụ"
+
+#: src/connections_scheduler/listen_threads.cpp:155
+#, c-format
+msgid "Listening on the port: %i"
+msgstr "Đang lắng nghe trên cổng: %i"
+
+#: src/http_handler/cgi/cgi.cpp:177
+#, c-format
+msgid "Cgi: cannot find the %s file"
+msgstr "Không tìm thấy tập tin %s"
+
+#: src/http_handler/cgi/cgi.cpp:311 src/http_handler/cgi/cgi.cpp:370
+#, c-format
+msgid "Cgi: process %i timeout"
+msgstr "Cgi: quá hạn chạy tiến trình %i"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:178
+#, c-format
+msgid "FastCGI: cannot connect to the %s process"
+msgstr "FastCGI: không thể kết nối đến tiến trình %s"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:517
+#: src/http_handler/fastcgi/fastcgi.cpp:757
+msgid "FastCGI: internal error"
+msgstr "FastCGI: lỗi nội bộ"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:659
+msgid "FastCGI: cannot find handler for SEND"
+msgstr "FastCGI: không tìm thấy bộ quản lý cho SEND"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:739
+msgid "FastCGI: server timeout"
+msgstr "FastCGI: quá hạn chạy trình phục vụ"
+
+#: src/http_handler/http_dir/http_dir.cpp:372
+#, c-format
+msgid "HttpDir: pattern `%s' is not valid"
+msgstr "HttpDir: mẫu « %s » không phải hợp lệ"
+
+#: src/http_handler/isapi/isapi.cpp:220 src/http_handler/isapi/isapi.cpp:347
+#: src/http_handler/isapi/isapi.cpp:739 src/http_handler/isapi/isapi.cpp:746
+msgid "ISAPI: internal error"
+msgstr "ISAPI: lỗi nội bộ"
+
+#: src/http_handler/isapi/isapi.cpp:710
+msgid "ISAPI: max connections"
+msgstr "ISAPI: số tối đa các kết nối"
+
+#: src/http_handler/isapi/isapi.cpp:721
+#, c-format
+msgid "ISAPI: cannot load %s"
+msgstr "ISAPI: không thể nạp %s"
+
+#: src/http_handler/isapi/isapi.cpp:754
+msgid "ISAPI: version not supported"
+msgstr "ISAPI: phiên bản không được hỗ trợ"
+
+#: src/http_handler/isapi/isapi.cpp:806
+msgid "ISAPI: cannot find entry-point"
+msgstr "ISAPI: không tìm thấy điểm vào"
+
+#: src/http_handler/isapi/isapi.cpp:854
+msgid "ISAPI: Not implemented"
+msgstr "ISAPI: Không được thực hiện"
+
+#: src/http_handler/mscgi/mscgi.cpp:117
+#, c-format
+msgid "MSCGI: cannot find entry-point for %s"
+msgstr "MSCGI: không tìm thấy điểm vào cho %s"
+
+#: src/http_handler/scgi/scgi.cpp:156
+msgid "SCGI: internal error"
+msgstr "SCGI: lỗi nội bộ"
+
+#: src/http_handler/wincgi/wincgi.cpp:343
+msgid "WinCGI: not implemented"
+msgstr "WinCGI:  chưa được thực hiện"
+
+#: src/log/log_manager.cpp:165
+#, c-format
+msgid "The %s log is shared among %i objects"
+msgstr "Sổ theo dõi %s được chia sẻ trong %i đối tượng"
+
+#: src/myserver.cpp:168
+msgid "Print the version for the application"
+msgstr "In ra phiên bản của ứng dụng"
+
+#: src/myserver.cpp:170
+msgid "Specify how run the server (by default console mode)"
+msgstr "Ghi rõ cách chạy trình phục vụ (bằng chế độ bàn giao tiếp mặc định)"
+
+#: src/myserver.cpp:172
+msgid ""
+"Specify the location (using the format protocol://resource) to use as the "
+"main log."
+msgstr ""
+"Ghi rõ vị trí (dùng định dạng « giao thức://tài_nguyên ») cần dùng như là sổ "
+"theo dõi chính."
+
+#: src/myserver.cpp:175
+msgid "Specify the file where write the PID"
+msgstr "Ghi rõ tập tin vào đó cần ghi PID (mã số tiến trình)"
+
+#: src/myserver.cpp:177
+msgid "Specify if use a fork server"
+msgstr "Ghi rõ có nên sử dụng một trình phục vụ phân nhánh (fork) hay không"
+
+#: src/myserver.cpp:179
+msgid "Specify an alternative directory where look for configuration files"
+msgstr "Ghi rõ một thư mục xen kẽ trong đó có thể tìm tập tin cấu hình"
+
+#: src/myserver.cpp:181
+msgid "Specify which plugins must be loaded before the server starts."
+msgstr "Ghi rõ những phần bổ sung cần nạp trước khi khởi chạy trình phục vụ."
+
+#: src/myserver.cpp:458
+msgid "Cannot load specified plugins"
+msgstr "Không thể nạp những phần bổ sung đã ghi rõ"
+
+#: src/myserver.cpp:478
+msgid "Cannot find the configuration files, be sure they exist"
+msgstr "Không tìm thấy tập tin cấu hình: kiểm tra lại có tập tin đó"
+
+#: src/plugin/plugins_manager.cpp:114
+msgid "Invalid plugin name in PLUGIN block."
+msgstr "Gặp tên phần bổ sung sai trong khối PLUGIN (phần bổ sung)."
+
+#: src/plugin/plugins_manager.cpp:144
+msgid "Invalid plugins source"
+msgstr "Gặp nguồn phần bổ sung sai "
+
+#: src/plugin/plugins_manager.cpp:275
+msgid "Invalid plugins data specified"
+msgstr "Sai xác định dữ liệu phần bổ sung"
+
+#: src/plugin/plugins_manager.cpp:294
+msgid ""
+"Cannot find the plugin data, please check that the specified name and path "
+"are correct"
+msgstr ""
+"Không tìm thấy dữ liệu phần bổ sung, hãy kiểm tra lại tên và đường dẫn đã "
+"ghi rõ"
+
+#: src/plugin/plugins_manager.cpp:309
+#, c-format
+msgid "Cannot load plugin %s"
+msgstr "Không thể nạp phần bổ sung %s"
+
+#: src/plugin/plugins_manager.cpp:345
+#, c-format
+msgid "Error loading plugin `%s'"
+msgstr "Gặp lỗi khi nạp phần bổ sung « %s »"
+
+#: src/plugin/plugins_manager.cpp:357 src/plugin/plugins_manager.cpp:373
+#: src/plugin/plugins_manager.cpp:389 src/plugin/plugins_manager.cpp:402
+#: src/plugin/plugins_manager.cpp:419 src/plugin/plugins_manager.cpp:432
+#: src/plugin/plugins_manager.cpp:452 src/plugin/plugins_manager.cpp:468
+#, c-format
+msgid "Error loading plugin `%s': invalid plugin.xml"
+msgstr "Gặp lỗi khi nạp phần bổ sung « %s »: tập tin « plugin.xml » sai"
+
+#: src/plugin/plugins_manager.cpp:498 src/plugin/plugins_manager.cpp:510
+#, c-format
+msgid "Error pre-loading plugin `%s'"
+msgstr "Gặp lỗi khi nạp sẵn phần bổ sung « %s »"
+
+#: src/plugin/plugins_manager.cpp:519
+#, fuzzy, c-format
+msgid "Error loading plugin `%s', the license is not GPL"
+msgstr "Gặp lỗi khi nạp phần bổ sung « %s »"
+
+#: src/plugin/plugins_manager.cpp:545 src/plugin/plugins_manager.cpp:636
+#, c-format
+msgid "Missing plugin dependence `%s' --> `%s'"
+msgstr "Phần bổ sung còn thiếu quan hệ phụ thuộc `%s' --> `%s'"
+
+#: src/plugin/plugins_manager.cpp:577 src/plugin/plugins_manager.cpp:649
+#, c-format
+msgid "Plugin `%s' not compatible with this version"
+msgstr "Phần bổ sung « %s » không tương thích với phiên bản này"
+
+#: src/plugin/plugins_manager.cpp:685
+#, c-format
+msgid "Loaded plugin `%s'"
+msgstr "Đã nạp phần bổ sung « %s »"
+
+#: src/protocol/control/control_protocol.cpp:307
+msgid "Control: specified version not supported"
+msgstr "Điều khiển: đã ghi rõ một phiên bản không phải được hỗ trợ"
+
+#: src/protocol/control/control_protocol.cpp:572
+#: src/protocol/control/control_protocol.cpp:613
+#: src/protocol/control/control_protocol.cpp:621
+#: src/protocol/control/control_protocol.cpp:633
+#: src/protocol/control/control_protocol.cpp:668
+#: src/protocol/control/control_protocol.cpp:680
+msgid "Control: internal error"
+msgstr "Điều khiển: lỗi nội bộ"
+
+#: src/protocol/gopher/engine.cpp:91
+msgid "Invalid requested Path\n"
+msgstr "Sai yêu cầu đường dẫn\n"
+
+#: src/protocol/http/webdav/webdav.cpp:276
+#: src/protocol/http/webdav/webdav.cpp:369
+#: src/protocol/http/webdav/webdav.cpp:454
+#: src/protocol/http/webdav/webdav.cpp:503
+#: src/protocol/http/webdav/webdav.cpp:567
+#: src/protocol/http/webdav/webdav.cpp:674
+#: src/protocol/http/webdav/webdav.cpp:733
+msgid "WebDAV is not enabled on this host"
+msgstr ""
+
+#: src/protocol/http/http.cpp:179 src/protocol/http/http.cpp:1289
+msgid "HTTP: socket error"
+msgstr "HTTP: lỗi ổ cắm"
+
+#: src/protocol/http/http.cpp:302 src/protocol/http/http.cpp:537
+#: src/protocol/http/http.cpp:726 src/protocol/http/http.cpp:1182
+#: src/protocol/http/http.cpp:1619
+msgid "HTTP: internal error"
+msgstr "HTTP: lỗi nội bộ"
+
+#: src/protocol/http/http.cpp:325
+msgid "HTTP: error accessing the security file"
+msgstr "HTTP: gặp lỗi khi truy cập đến tập tin bảo mật"
+
+#: src/protocol/http/http.cpp:593
+msgid ""
+"HTTP: internal error, when using digest auth only a1 and cleartext passwords "
+"can be used"
+msgstr ""
+"HTTP: lỗi nội bộ, khi xác thực bằng bản tóm tắt (digest) thì chỉ cho phép sử "
+"dụng mật khẩu nhập thô và a1"
+
+#: src/protocol/http/http.cpp:1001
+#, c-format
+msgid "Cannot find host %s on %s (port %i)"
+msgstr ""
+
+#: src/protocol/http/http.cpp:1387
+#, c-format
+msgid "HTTP: The specified error page: %s does not exist"
+msgstr "HTTP: đã ghi rõ một trang lỗi (%s) không tồn tại"
+
+#: src/protocol/http/http_data_handler.cpp:34
+msgid "HttpDataHandler: using the base interface!"
+msgstr "HttpDataHandler: đang sử dụng giao thức cơ bản !"
+
+#: src/server/clients_thread.cpp:167 src/server/server.cpp:229
+#, c-format
+msgid "Bad alloc: %s"
+msgstr "Sai cấp phát: %s"
+
+#: src/server/server.cpp:131
+msgid "Error loading the socket library"
+msgstr "Gặp lỗi khi nạp thư viện ổ cắm"
+
+#: src/server/server.cpp:178
+msgid "Initializing server configuration..."
+msgstr "Đang sơ khởi cấu hình trình phục vụ..."
+
+#: src/server/server.cpp:182 src/server/server.cpp:188
+#: src/server/server.cpp:195 src/server/server.cpp:204
+msgid "The server could not be started"
+msgstr "Trình phục vụ này không khởi chạy được"
+
+#: src/server/server.cpp:199
+#, fuzzy, c-format
+msgid "Loading server configuration from %s..."
+msgstr "Đang nạp cấu hình trình phục vụ..."
+
+#: src/server/server.cpp:211
+#, c-format
+msgid "Using gid: %s"
+msgstr "Đang dùng GID: %s"
+
+#: src/server/server.cpp:214
+#, c-format
+msgid "Using uid: %s"
+msgstr "Đang dùng UID: %s"
+
+#: src/server/server.cpp:216
+msgid "Server is ready!"
+msgstr "Trình phục vụ có sẵn sàng !"
+
+#: src/server/server.cpp:219
+msgid "Press Ctrl-C to terminate its execution"
+msgstr "Bấm tổ hợp phím Ctrl+C để chấm dứt nó"
+
+#: src/server/server.cpp:233
+#, c-format
+msgid "Error: %s"
+msgstr "Lỗi: %s"
+
+#: src/server/server.cpp:243
+msgid "Server terminated"
+msgstr "Trình phục vụ bị chấm dứt"
+
+#: src/server/server.cpp:258
+#, c-format
+msgid "Host name: %s"
+msgstr "Tên máy: %s"
+
+#: src/server/server.cpp:267
+msgid "Error reading IP list"
+msgstr "Gặp lỗi khi đọc danh sách các địa chỉ IP"
+
+#: src/server/server.cpp:271
+#, c-format
+msgid "IP: %s"
+msgstr "IP: %s"
+
+#: src/server/server.cpp:273
+#, c-format
+msgid "Detected %i CPUs"
+msgstr "Phát hiện được %i CPU"
+
+#: src/server/server.cpp:297
+#, fuzzy, c-format
+msgid "Loading MIME types from %s..."
+msgstr "Đang nạp các dạng MIME..."
+
+#: src/server/server.cpp:307
+#, c-format
+msgid "Error creating the MIME types handler: %s"
+msgstr "Gặp lỗi khi tạo bộ quản lý các dạng MIME: %s"
+
+#: src/server/server.cpp:312
+#, c-format
+msgid "Using %i MIME types"
+msgstr "Đang sử dụng %i dạng MIME"
+
+#: src/server/server.cpp:314
+msgid "Error while loading MIME types"
+msgstr "Gặp lỗi khi nạp các dạng MIME"
+
+#: src/server/server.cpp:318
+#, c-format
+msgid "Creating thread %i..."
+msgstr "Đang tạo nhánh %i..."
+
+#: src/server/server.cpp:322
+msgid "Error while creating thread"
+msgstr "Gặp lỗi khi tạo nhánh"
+
+#: src/server/server.cpp:326
+#, c-format
+msgid "Thread %i created"
+msgstr "Nhánh %i đã được tạo"
+
+#: src/server/server.cpp:348
+#, c-format
+msgid "Error creating the virtual hosts handler: %s"
+msgstr "Gặp lỗi khi tạo bộ quản lý các máy ảo : %s"
+
+#: src/server/server.cpp:359
+#, fuzzy, c-format
+msgid "Loading virtual hosts from %s..."
+msgstr "Gặp lỗi khi tạo bộ quản lý các máy ảo : %s"
+
+#: src/server/server.cpp:365
+#, c-format
+msgid "Error loading the vhost configuration file %s"
+msgstr "Gặp lỗi khi nạp tập tin cấu hình máy ảo %s"
+
+#: src/server/server.cpp:390
+msgid "Error while loading plugins"
+msgstr "Gặp lỗi trong khi nạp phần bổ sung"
+
+#: src/server/server.cpp:482
+#, fuzzy, c-format
+msgid "Reloading MIME types from %s"
+msgstr "Đang nạp lại các dạng MIME"
+
+#: src/server/server.cpp:487 src/server/server.cpp:526
+msgid "Reloaded"
+msgstr "Đã nạp lại"
+
+#: src/server/server.cpp:505
+msgid "Rebooting..."
+msgstr "Đang khởi động lại..."
+
+#: src/server/server.cpp:705
+msgid "Stopping threads"
+msgstr "Đang ngừng chạy các nhánh"
+
+#: src/server/server.cpp:731
+msgid "Threads stopped"
+msgstr "Các nhánh bị dừng"
+
+#: src/server/server.cpp:733
+msgid "Cleaning memory"
+msgstr "Đang làm sạch vùng nhớ"
+
+#: src/server/server.cpp:768
+msgid "MyServer has stopped"
+msgstr "MyServer đã dừng chạy"
+
+#: src/server/server.cpp:817 src/server/server.cpp:829
+#, c-format
+msgid "Error while loading the %s configuration file"
+msgstr "Gặp lỗi trong khi nạp tập tin cấu hình %s"
+
+#: src/server/server.cpp:1447
+msgid "Error setting additional groups"
+msgstr "Gặp lỗi khi lập các nhóm bổ sung"
+
+#: src/server/server.cpp:1450
+msgid "Error setting gid"
+msgstr "Gặp lỗi khi lập GID"
+
+#: src/server/server.cpp:1464
+msgid "Error setting uid"
+msgstr "Gặp lỗi khi lập UID"
+
+#: src/server/server.cpp:1506
+msgid "Rebooting"
+msgstr "Đang khởi động lại"
+
+#: src/server/server.cpp:1526
+msgid "The server could not be restarted"
+msgstr "Không thể khởi chạy lại trình phục vụ"
+
+#: src/server/server.cpp:1532
+msgid "Restarted"
+msgstr "Đã khởi chạy lại"
+
+#: src/server/server.cpp:1656
+msgid "Error creating thread"
+msgstr "Gặp lỗi khi tạo nhánh"
+
+#~ msgid "internal error"
+#~ msgstr "lỗi nội bộ"
+
+#~ msgid "Specified invalid port %s"
+#~ msgstr "Sai lập cổng %s"
+
+#~ msgid "Cgi: Executable file not specified"
+#~ msgstr "Cgi: Chưa ghi rõ tập tin thực thi"
+
+#~ msgid "Cgi: internal error"
+#~ msgstr "Cgi: lỗi nội bộ"
+
+#~ msgid "HttpDir: internal error"
+#~ msgstr "HttpDir: lỗi nội bộ"
+
+#~ msgid "HttpFile: error accessing file %s"
+#~ msgstr "HttpDir: gặp lỗi khi truy cập đến tập tin %s"
+
+#~ msgid "HttpFile: internal error"
+#~ msgstr "HttpDir: lỗi nội bộ"
+
+#~ msgid "HttpFile: cannot delete file %s"
+#~ msgstr "HttpFile: không thể xoá bỏ tập tin %s"
+
+#~ msgid "MSCGI: cannot load %s"
+#~ msgstr "MSCGI: Không thể nạp %s"
+
+#~ msgid "Msgi: internal error"
+#~ msgstr "Msgi: lỗi nội bộ"
+
+#~ msgid "SCGI: error connecting to the process %s"
+#~ msgstr "SCGI: gặp lỗi khi kết nối đến tiến trình %s"
+
+#~ msgid "WinCGI: error executing %s"
+#~ msgstr "WinCGI: gặp lỗi khi thực hiện %s"
+
+#~ msgid "WinCGI: internal error"
+#~ msgstr "WinCGI: lỗi nội bộ"
+
+#~ msgid "HTTP: cannot get permissions for %s"
+#~ msgstr "HTTP: không thể lấy quyền truy cập đến %s"
+
+#~ msgid "HTTP: recursive error"
+#~ msgstr "HTTP: lỗi đệ quy"
+
+#~ msgid "Http: internal error"
+#~ msgstr "Http: lỗi nội bộ"
+
+#~ msgid "Error : %s"
+#~ msgstr "Lỗi : %s"

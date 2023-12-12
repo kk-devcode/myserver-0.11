@@ -1,0 +1,613 @@
+# Finnish messages for myserver.
+# Copyright © 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the myserver package.
+# Jorma Karvonen <karvonen.jorma@gmail.com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: myserver 0.9.3\n"
+"Report-Msgid-Bugs-To: bug-myserver@gnu.org\n"
+"POT-Creation-Date: 2011-07-16 15:53+0200\n"
+"PO-Revision-Date: 2010-07-12 10:33+0200\n"
+"Last-Translator: Jorma Karvonen <karvonen.jorma@gmail.com>\n"
+"Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/base/crypt/crypt_algo_manager.cpp:109
+#, c-format
+msgid "%s is not a registered algorithm"
+msgstr "%s ei ole rekisteröity algoritmi"
+
+#: src/base/pipe/pipe.cpp:164 src/conf/vhost/xml_vhost_handler.cpp:516
+msgid "Internal error"
+msgstr "Sisäinen virhe"
+
+#: src/base/process/process_server_manager.cpp:131
+#, c-format
+msgid "Error: incomplete remote PROCESS_SERVER block, %s:%s needs a port"
+msgstr "Virhe: vaillinainen PROCESS_SERVER-etälohko, %s:%s tarvitsee portin"
+
+#: src/base/process/process_server_manager.cpp:137
+msgid "Error: incomplete PROCESS_SERVER block"
+msgstr "Virhe: vaillinainen PROCESS_SERVER-lohko"
+
+#: src/base/process/process_server_manager.cpp:455
+#, c-format
+msgid "Cannot run process %s: Reached max number of servers"
+msgstr ""
+"Ei voida suorittaa prosessia %s: Saavutettiin palvelimien enimmäismäärä"
+
+#: src/conf/mime/xml_mime_handler.cpp:275
+#, c-format
+msgid "XmlMimeHandler: Duplicate extension: %s"
+msgstr ""
+
+#: src/conf/vhost/xml_vhost_handler.cpp:66
+#, c-format
+msgid "Protocol not defined for vhost: %s, using HTTP by default"
+msgstr ""
+"Yhteyskäytäntöä ei ole määritelty kohteelle vhost: %s, käytetään "
+"yhteyskäytäntöä HTTP oletuksena"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:73
+#, c-format
+msgid "The protocol \"%s\" is used but not loaded"
+msgstr "Yhteyskäytäntöä ”%s” käytetään, mutta ei ole ladattu"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:192
+#, fuzzy
+msgid "Error while changing accesses log owner"
+msgstr "Virhe muutettaessa käytettyjen lokisijaintien omistajaa"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:197
+#, fuzzy
+msgid "Error while changing warnings log owner"
+msgstr "Virhe muutettaessa lokisijainnin omistajaa"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:248
+msgid "Unexpected element in virtual host streams"
+msgstr ""
+
+#: src/conf/vhost/xml_vhost_handler.cpp:281
+#: src/conf/vhost/xml_vhost_handler.cpp:289
+#: src/conf/vhost/xml_vhost_handler.cpp:310
+#, c-format
+msgid "Error opening %s"
+msgstr "Virhe avattaessa kohdetta %s"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:293
+msgid " Unrecognized log type"
+msgstr " Tunnistamaton lokityyppi"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:362
+#, c-format
+msgid "The location `%s' is registered multiple times"
+msgstr "Sijainti ”%s” on rekisteröity useita kertoja"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:411
+#, fuzzy, c-format
+msgid "An invalid port was specified: %s"
+msgstr "Virheelliset lisäosien tiedot määritelty"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:479
+#, c-format
+msgid "Error loading mime types file: %s"
+msgstr "Virhe ladattaessa mime-tyyppien tiedostoa: %s"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:497
+msgid "Error opening log files"
+msgstr "Virhe avattaessa lokitiedostoja"
+
+#: src/conf/vhost/xml_vhost_handler.cpp:506
+#, c-format
+msgid "Error initializing SSL for %s"
+msgstr "Virhe alustettaessa SLL:ää kohteelle %s"
+
+#: src/connections_scheduler/connections_scheduler.cpp:354
+msgid "Error initializing socket pair"
+msgstr "Virhe alustettaessa pistokeparia"
+
+#: src/connections_scheduler/connections_scheduler.cpp:374
+msgid "Error while initializing the dispatcher thread"
+msgstr "Virhe alustettaessa vuoronantosäiettä"
+
+#: src/connections_scheduler/listen_threads.cpp:97
+#: src/connections_scheduler/listen_threads.cpp:129
+msgid "Binding the port"
+msgstr "Sidotaan portti"
+
+#: src/connections_scheduler/listen_threads.cpp:99
+#: src/connections_scheduler/listen_threads.cpp:131
+msgid "Port was bound"
+msgstr "Portti sidottiin"
+
+#: src/connections_scheduler/listen_threads.cpp:137
+#, fuzzy
+msgid "Error while creating the IPv6 server socket"
+msgstr "Virhe luotaessa palvelinpistoketta"
+
+#: src/connections_scheduler/listen_threads.cpp:155
+#, c-format
+msgid "Listening on the port: %i"
+msgstr "Kuunnellaan portissa: %i"
+
+#: src/http_handler/cgi/cgi.cpp:177
+#, c-format
+msgid "Cgi: cannot find the %s file"
+msgstr "Cgi: %s-tiedostoa ei löydy"
+
+#: src/http_handler/cgi/cgi.cpp:311 src/http_handler/cgi/cgi.cpp:370
+#, c-format
+msgid "Cgi: process %i timeout"
+msgstr "Cgi: prosessin %i aikakatkaisu"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:178
+#, c-format
+msgid "FastCGI: cannot connect to the %s process"
+msgstr "FastCGI: ei voida yhdistää %s-prosessiin"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:517
+#: src/http_handler/fastcgi/fastcgi.cpp:757
+msgid "FastCGI: internal error"
+msgstr "FastCGI: sisäinen virhe"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:659
+msgid "FastCGI: cannot find handler for SEND"
+msgstr "FastCGI: ei kyetä löytämää käsittelijää kohteelle SEND"
+
+#: src/http_handler/fastcgi/fastcgi.cpp:739
+msgid "FastCGI: server timeout"
+msgstr "FastCGI: palvelimen aikakatkaisu"
+
+#: src/http_handler/http_dir/http_dir.cpp:372
+#, c-format
+msgid "HttpDir: pattern `%s' is not valid"
+msgstr "HttpDir: malli ”%s” ei ole kelvollinen"
+
+#: src/http_handler/isapi/isapi.cpp:220 src/http_handler/isapi/isapi.cpp:347
+#: src/http_handler/isapi/isapi.cpp:739 src/http_handler/isapi/isapi.cpp:746
+msgid "ISAPI: internal error"
+msgstr "ISAPI: sisäinen virhe"
+
+#: src/http_handler/isapi/isapi.cpp:710
+msgid "ISAPI: max connections"
+msgstr "ISAPI: yhteyksien enimmäismäärä"
+
+#: src/http_handler/isapi/isapi.cpp:721
+#, c-format
+msgid "ISAPI: cannot load %s"
+msgstr "ISAPI: ei voi ladata kohdetta %s"
+
+#: src/http_handler/isapi/isapi.cpp:754
+msgid "ISAPI: version not supported"
+msgstr "ISAPI: versiota ei tueta"
+
+#: src/http_handler/isapi/isapi.cpp:806
+msgid "ISAPI: cannot find entry-point"
+msgstr "ISAPI: ei kyetä löytämään tulokohtaa"
+
+#: src/http_handler/isapi/isapi.cpp:854
+msgid "ISAPI: Not implemented"
+msgstr "ISAPI: Ei ole toteutettu"
+
+#: src/http_handler/mscgi/mscgi.cpp:117
+#, c-format
+msgid "MSCGI: cannot find entry-point for %s"
+msgstr "MSCGI: ei kyetä löytämään tulokohtaa kohteelle %s"
+
+#: src/http_handler/scgi/scgi.cpp:156
+msgid "SCGI: internal error"
+msgstr "SCGI: sisäinen virhe"
+
+#: src/http_handler/wincgi/wincgi.cpp:343
+msgid "WinCGI: not implemented"
+msgstr "WinCGI: ei ole toteutettu"
+
+#: src/log/log_manager.cpp:165
+#, c-format
+msgid "The %s log is shared among %i objects"
+msgstr "Loki %s jaetaan %i:n objektin kesken"
+
+#: src/myserver.cpp:168
+msgid "Print the version for the application"
+msgstr "Tulosta versio sovellukselle"
+
+#: src/myserver.cpp:170
+msgid "Specify how run the server (by default console mode)"
+msgstr "Määritä kuinka palvelinta suoritetaan (oletuksena konsolitilassa)"
+
+#: src/myserver.cpp:172
+msgid ""
+"Specify the location (using the format protocol://resource) to use as the "
+"main log."
+msgstr ""
+"Määritä sijainti (käytetään muotoa yhteyskäytäntö://resurssi) päälokin "
+"käyttöön."
+
+#: src/myserver.cpp:175
+msgid "Specify the file where write the PID"
+msgstr "Määritä tiedosto, johon PID-tunniste kirjoitetaan"
+
+#: src/myserver.cpp:177
+msgid "Specify if use a fork server"
+msgstr "Määritä, jos käytetään fork-palvelinta"
+
+#: src/myserver.cpp:179
+msgid "Specify an alternative directory where look for configuration files"
+msgstr "Määritä vaihtoehtoinen hakemisto, josta asetustiedostoja etsitään"
+
+#: src/myserver.cpp:181
+msgid "Specify which plugins must be loaded before the server starts."
+msgstr "Määritä mitä lisäosia pitää ladata ennen palvelimen käynnistymistä."
+
+#: src/myserver.cpp:458
+msgid "Cannot load specified plugins"
+msgstr "Ei voida ladata määriteltyjä lisäosia"
+
+#: src/myserver.cpp:478
+msgid "Cannot find the configuration files, be sure they exist"
+msgstr "Ei kyetä löytämään asetustiedostoja, varmista että ne ovat olemassa"
+
+#: src/plugin/plugins_manager.cpp:114
+msgid "Invalid plugin name in PLUGIN block."
+msgstr "Virheellinen lisäosanimi PLUGIN-lohkossa."
+
+#: src/plugin/plugins_manager.cpp:144
+msgid "Invalid plugins source"
+msgstr "Virheellinen lisäosien lähde"
+
+#: src/plugin/plugins_manager.cpp:275
+msgid "Invalid plugins data specified"
+msgstr "Virheelliset lisäosien tiedot määritelty"
+
+#: src/plugin/plugins_manager.cpp:294
+msgid ""
+"Cannot find the plugin data, please check that the specified name and path "
+"are correct"
+msgstr ""
+"Ei kyetä löytämään lisäosatietoja, tarkista että määritelty nimi ja polku "
+"ovat oikein"
+
+#: src/plugin/plugins_manager.cpp:309
+#, c-format
+msgid "Cannot load plugin %s"
+msgstr "Ei voida ladata lisäosaa %s"
+
+#: src/plugin/plugins_manager.cpp:345
+#, c-format
+msgid "Error loading plugin `%s'"
+msgstr "Virhe ladattaessa lisäosaa ”%s”"
+
+#: src/plugin/plugins_manager.cpp:357 src/plugin/plugins_manager.cpp:373
+#: src/plugin/plugins_manager.cpp:389 src/plugin/plugins_manager.cpp:402
+#: src/plugin/plugins_manager.cpp:419 src/plugin/plugins_manager.cpp:432
+#: src/plugin/plugins_manager.cpp:452 src/plugin/plugins_manager.cpp:468
+#, c-format
+msgid "Error loading plugin `%s': invalid plugin.xml"
+msgstr "Virhe ladattaessa lisäosaa ”%s”: virheellinen plugin.xml"
+
+#: src/plugin/plugins_manager.cpp:498 src/plugin/plugins_manager.cpp:510
+#, c-format
+msgid "Error pre-loading plugin `%s'"
+msgstr "Virhe esiladattaessa lisäosaa ”%s”"
+
+#: src/plugin/plugins_manager.cpp:519
+#, fuzzy, c-format
+msgid "Error loading plugin `%s', the license is not GPL"
+msgstr "Virhe ladattaessa lisäosaa ”%s”"
+
+#: src/plugin/plugins_manager.cpp:545 src/plugin/plugins_manager.cpp:636
+#, c-format
+msgid "Missing plugin dependence `%s' --> `%s'"
+msgstr "Puuttuva lisäosariippuvuus ”%s” --> ”%s”"
+
+#: src/plugin/plugins_manager.cpp:577 src/plugin/plugins_manager.cpp:649
+#, c-format
+msgid "Plugin `%s' not compatible with this version"
+msgstr "Lisäosa ”%s” ei ole yhteensopiva tämän version kanssa"
+
+#: src/plugin/plugins_manager.cpp:685
+#, c-format
+msgid "Loaded plugin `%s'"
+msgstr "Ladattiin lisäosa ”%s”"
+
+#: src/protocol/control/control_protocol.cpp:307
+msgid "Control: specified version not supported"
+msgstr "Control: määritettyä versiota ei tueta"
+
+#: src/protocol/control/control_protocol.cpp:572
+#: src/protocol/control/control_protocol.cpp:613
+#: src/protocol/control/control_protocol.cpp:621
+#: src/protocol/control/control_protocol.cpp:633
+#: src/protocol/control/control_protocol.cpp:668
+#: src/protocol/control/control_protocol.cpp:680
+msgid "Control: internal error"
+msgstr "Control: sisäinen virhe"
+
+#: src/protocol/gopher/engine.cpp:91
+msgid "Invalid requested Path\n"
+msgstr "Virheellinen pyydetty polku\n"
+
+#: src/protocol/http/webdav/webdav.cpp:276
+#: src/protocol/http/webdav/webdav.cpp:369
+#: src/protocol/http/webdav/webdav.cpp:454
+#: src/protocol/http/webdav/webdav.cpp:503
+#: src/protocol/http/webdav/webdav.cpp:567
+#: src/protocol/http/webdav/webdav.cpp:674
+#: src/protocol/http/webdav/webdav.cpp:733
+msgid "WebDAV is not enabled on this host"
+msgstr ""
+
+#: src/protocol/http/http.cpp:179 src/protocol/http/http.cpp:1289
+msgid "HTTP: socket error"
+msgstr "HTTP: pistokevirhe"
+
+#: src/protocol/http/http.cpp:302 src/protocol/http/http.cpp:537
+#: src/protocol/http/http.cpp:726 src/protocol/http/http.cpp:1182
+#: src/protocol/http/http.cpp:1619
+msgid "HTTP: internal error"
+msgstr "HTTP: sisäinen virhe"
+
+#: src/protocol/http/http.cpp:325
+msgid "HTTP: error accessing the security file"
+msgstr "HTTP: virhe käytettäessä turvatiedostoa"
+
+#: src/protocol/http/http.cpp:593
+msgid ""
+"HTTP: internal error, when using digest auth only a1 and cleartext passwords "
+"can be used"
+msgstr ""
+"HTTP: sisäinen virhe, kun käytetään koostetodennusta, vain a1- ja "
+"selväkielitekstisiä salasanoja voidaan käyttää"
+
+#: src/protocol/http/http.cpp:1001
+#, c-format
+msgid "Cannot find host %s on %s (port %i)"
+msgstr ""
+
+#: src/protocol/http/http.cpp:1387
+#, c-format
+msgid "HTTP: The specified error page: %s does not exist"
+msgstr "HTTP: Määritelty virhesivu %s ei ole olemassa"
+
+#: src/protocol/http/http_data_handler.cpp:34
+msgid "HttpDataHandler: using the base interface!"
+msgstr "HttpDataHandler: käytetään peruskäyttöliittymää!"
+
+#: src/server/clients_thread.cpp:167 src/server/server.cpp:229
+#, c-format
+msgid "Bad alloc: %s"
+msgstr "Väärä alloc-kutsu: %s"
+
+#: src/server/server.cpp:131
+msgid "Error loading the socket library"
+msgstr "Virhe ladattaessa pistokekirjastoa"
+
+#: src/server/server.cpp:178
+msgid "Initializing server configuration..."
+msgstr "Alustetaan palvelinasetuksia..."
+
+#: src/server/server.cpp:182 src/server/server.cpp:188
+#: src/server/server.cpp:195 src/server/server.cpp:204
+msgid "The server could not be started"
+msgstr "Palvelimen käynnistyminen epäonnistui"
+
+#: src/server/server.cpp:199
+#, fuzzy, c-format
+msgid "Loading server configuration from %s..."
+msgstr "Ladataan palvelinasetukset..."
+
+#: src/server/server.cpp:211
+#, c-format
+msgid "Using gid: %s"
+msgstr "Käytetään gid-ryhmätunnusta: %s"
+
+#: src/server/server.cpp:214
+#, c-format
+msgid "Using uid: %s"
+msgstr "Käytetään uid-käyttäjätunnusta: %s"
+
+#: src/server/server.cpp:216
+msgid "Server is ready!"
+msgstr "Palvelin on valmis!"
+
+#: src/server/server.cpp:219
+msgid "Press Ctrl-C to terminate its execution"
+msgstr "Paina Ctrl-C-näppäimiä sen suorituksen päättämiseksi"
+
+#: src/server/server.cpp:233
+#, c-format
+msgid "Error: %s"
+msgstr "Virhe: %s"
+
+#: src/server/server.cpp:243
+msgid "Server terminated"
+msgstr "Palvelin pysäytettiin"
+
+#: src/server/server.cpp:258
+#, c-format
+msgid "Host name: %s"
+msgstr "Tietokoneen nimi: %s"
+
+#: src/server/server.cpp:267
+msgid "Error reading IP list"
+msgstr "Virhe luettaessa verkko-osoiteluetteloa"
+
+#: src/server/server.cpp:271
+#, c-format
+msgid "IP: %s"
+msgstr "Verkko-osoite: %s"
+
+#: src/server/server.cpp:273
+#, c-format
+msgid "Detected %i CPUs"
+msgstr "Havaittu %i prosessoria"
+
+#: src/server/server.cpp:297
+#, fuzzy, c-format
+msgid "Loading MIME types from %s..."
+msgstr "Ladataan MIME-tyyppejä..."
+
+#: src/server/server.cpp:307
+#, c-format
+msgid "Error creating the MIME types handler: %s"
+msgstr "Virhe luotaessa MIME-tyyppien käsittelijää: %s"
+
+#: src/server/server.cpp:312
+#, c-format
+msgid "Using %i MIME types"
+msgstr "Käytetään %i MIME-tyyppiä"
+
+#: src/server/server.cpp:314
+msgid "Error while loading MIME types"
+msgstr "Virhe ladattaessa MIME-tyyppejä"
+
+#: src/server/server.cpp:318
+#, c-format
+msgid "Creating thread %i..."
+msgstr "Luodaan säie %i..."
+
+#: src/server/server.cpp:322
+msgid "Error while creating thread"
+msgstr "Virhe luotaessa säiettä"
+
+#: src/server/server.cpp:326
+#, c-format
+msgid "Thread %i created"
+msgstr "Säie %i luotiin"
+
+#: src/server/server.cpp:348
+#, c-format
+msgid "Error creating the virtual hosts handler: %s"
+msgstr "Virhe luotaessa virtuaalista isäntäkäsittelijää: %s"
+
+#: src/server/server.cpp:359
+#, fuzzy, c-format
+msgid "Loading virtual hosts from %s..."
+msgstr "Virhe luotaessa virtuaalista isäntäkäsittelijää: %s"
+
+#: src/server/server.cpp:365
+#, c-format
+msgid "Error loading the vhost configuration file %s"
+msgstr "Virhe ladattaessa vhost-asetustiedostoa %s"
+
+#: src/server/server.cpp:390
+msgid "Error while loading plugins"
+msgstr "Virhe ladattaessa lisäosia"
+
+#: src/server/server.cpp:482
+#, fuzzy, c-format
+msgid "Reloading MIME types from %s"
+msgstr "Ladataan MIME-tyyppejä"
+
+#: src/server/server.cpp:487 src/server/server.cpp:526
+msgid "Reloaded"
+msgstr "Ladattu uudelleen"
+
+#: src/server/server.cpp:505
+msgid "Rebooting..."
+msgstr "Käynnistetään uudelleen..."
+
+#: src/server/server.cpp:705
+msgid "Stopping threads"
+msgstr "Pysäytetään säikeet"
+
+#: src/server/server.cpp:731
+msgid "Threads stopped"
+msgstr "Säikeet pysäytettiin"
+
+#: src/server/server.cpp:733
+msgid "Cleaning memory"
+msgstr "Tyhjennetään muisti"
+
+#: src/server/server.cpp:768
+msgid "MyServer has stopped"
+msgstr "MyServer pysähtyi"
+
+#: src/server/server.cpp:817 src/server/server.cpp:829
+#, c-format
+msgid "Error while loading the %s configuration file"
+msgstr "Virhe ladattaessa %s-asetustiedostoa"
+
+#: src/server/server.cpp:1447
+msgid "Error setting additional groups"
+msgstr "Virhe asetettaessa lisäryhmiä"
+
+#: src/server/server.cpp:1450
+msgid "Error setting gid"
+msgstr "Virhe asetettaessa gid-ryhmätunnusta"
+
+#: src/server/server.cpp:1464
+msgid "Error setting uid"
+msgstr "Virhe asetettaessa uid-käyttäjätunnusta"
+
+#: src/server/server.cpp:1506
+msgid "Rebooting"
+msgstr "Käynnistetään uudelleen"
+
+#: src/server/server.cpp:1526
+msgid "The server could not be restarted"
+msgstr "Palvelinta ei voitu käynnistää uudelleen"
+
+#: src/server/server.cpp:1532
+msgid "Restarted"
+msgstr "Käynnistettiin uudelleen"
+
+#: src/server/server.cpp:1656
+msgid "Error creating thread"
+msgstr "Virhe luotaessa säiettä"
+
+#~ msgid "internal error"
+#~ msgstr "sisäinen virhe"
+
+#~ msgid "Specified invalid port %s"
+#~ msgstr "Määritelty virheellinen portti %s"
+
+#~ msgid "Cgi: Executable file not specified"
+#~ msgstr "Cgi: Suoritettava tiedosto ei ole määritelty"
+
+#~ msgid "Cgi: internal error"
+#~ msgstr "Cgi: sisäinen virhe"
+
+#~ msgid "HttpDir: internal error"
+#~ msgstr "HttpDir: sisäinen virhe"
+
+#~ msgid "HttpFile: error accessing file %s"
+#~ msgstr "HttpFile: virhe käytettäessä tiedostoa %s"
+
+#~ msgid "HttpFile: internal error"
+#~ msgstr "HttpFile: sisäinen virhe"
+
+#~ msgid "HttpFile: cannot delete file %s"
+#~ msgstr "HttpFile: ei voi poistaa tiedostoa %s"
+
+#~ msgid "MSCGI: cannot load %s"
+#~ msgstr "MSCGI: ei voi ladata kohdetta %s"
+
+#~ msgid "Msgi: internal error"
+#~ msgstr "Msgi: sisäinen virhe"
+
+#~ msgid "SCGI: error connecting to the process %s"
+#~ msgstr "SCGI: virhe yhdistettäessä prosessiin %s"
+
+#~ msgid "WinCGI: error executing %s"
+#~ msgstr "WinCGI: virhe suoritettaessa kohdetta %s"
+
+#~ msgid "WinCGI: internal error"
+#~ msgstr "WinCGI: sisäinen virhe"
+
+#~ msgid "HTTP: cannot get permissions for %s"
+#~ msgstr "HTTP: ei voida hakea käyttöoikeuksia kohteelle %s"
+
+#~ msgid "HTTP: recursive error"
+#~ msgstr "HTTP: rekursiovirhe"
+
+#~ msgid "Http: internal error"
+#~ msgstr "Http: sisäinen virhe"
+
+#~ msgid "Error : %s"
+#~ msgstr "Virhe : %s"

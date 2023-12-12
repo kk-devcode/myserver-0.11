@@ -1,0 +1,345 @@
+#-*- mode: python -*-
+# MySever configuration script for scons.
+#
+# MyServer
+# http://www.gnu.org/software/myserver/
+#
+# Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2011
+# Free Software Foundation, Inc.
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import os
+import glob
+
+import xml.dom.minidom
+from xml.dom.minidom import Node
+
+import string
+
+f = open('version','r')
+MYSERVER_VERSION = "GNU MyServer " + f.readline()
+f.close()
+
+GIT_LOCATION = "git clone git://git.savannah.gnu.org/myserver.git"
+HOMEPAGE = "http://www.gnu.org/software/myserver/"
+
+mode = ARGUMENTS.get('mode', "debug")
+command = ARGUMENTS.get('command', "build")
+prefix = ARGUMENTS.get('prefix', "")
+ddir = ARGUMENTS.get('destdir', "#/release")
+plugin = ARGUMENTS.get('plugin', "")
+
+destdir = ddir
+
+listinc=[
+      '/usr/local/include',
+      '/usr/include',
+      '/usr/local/include/libxml2',
+      '/usr/include/libxml2',
+      '.'
+      ]
+
+buildControlGui = False
+buildMscgiExamples = False
+doTests = False
+
+
+# SCons helper
+################
+
+def Define_helper(name, value = None):
+    content = []
+
+    if value is not None:
+        define_txt = "#define %s %s" % (name, value)
+    else:
+        define_txt = "#define %s" % name
+
+    content.append(define_txt)
+    content.append('')
+
+    conf.config_h_text = conf.config_h_text + string.join (content, '\n')
+
+################
+
+def get_cpp_files(dir):
+    ret = []
+
+    for root, dirs, files in os.walk(dir):
+        seq = filter(lambda x : x[-4:] == ".cpp", files)
+        for i in seq:
+            ret.append(root + "/" + i)
+    return ret
+
+
+
+if command == "git_pull":
+    Execute("git pull")
+
+if command == "checkout_git":
+    Execute("git clone " + GIT_LOCATION)
+
+if mode == "release":
+    env = Environment(ENV = {'PATH' : os.environ.get('PATH') or '.',
+                             'TERM' : os.environ.get('TERM') or '' ,
+                             'HOME' : os.environ.get('HOME') or ''},
+                      CPPPATH=listinc,
+                      CXXFLAGS="-fPIC -DPIC  -DHAVE_CONFIG_H",
+                      LINKFLAGS="-rdynamic" )
+else:
+    env = Environment(ENV = {'PATH' : os.environ.get('PATH') or '.',
+                             'TERM' : os.environ.get('TERM') or '',
+                             'HOME' : os.environ.get('HOME') or ''},
+ 		      LIBPATH = ['/usr/lib', '/usr/local/lib'],
+                      CPPPATH=listinc,
+                      CXXFLAGS="-fPIC -DPIC -g3 -DHAVE_CONFIG_H",
+                      LINKFLAGS="-rdynamic" )
+
+
+if  not env.GetOption('clean'):
+    conf = Configure(env, config_h="config.h")
+
+    if not conf.__dict__.has_key('Define'):
+        conf.Define = Define_helper
+
+    conf.Define("MYSERVER_VERSION", '"' + MYSERVER_VERSION + '"')
+
+    if not conf.CheckLib("libxml2"):
+        print "libxml2 is required to compile MyServer"
+        Exit(1)
+
+    if conf.CheckLib("event"):
+        conf.Define('EVENT', 1)
+    else:
+        print "libevent is required to compile MyServer"
+        Exit(1)
+
+    if not conf.CheckLib("ssl"):
+        print "gnutls is required by MyServer"
+        Exit(1)
+
+    if conf.CheckLib("z"):
+        conf.Define('HAVE_ZLIB', 1)
+
+    conf.CheckLib("event")
+        
+    if not conf.CheckType('socklen_t', language="C", includes="#include <sys/socket.h>\n#include <arpa/inet.h>\n#include <unistd.h>"):
+        conf.Define('socklen_t', 'int')
+
+    if len(prefix):
+        conf.Define('PREFIX', prefix)
+
+    if conf.CheckLib("pthread"):
+        conf.Define('PTHREAD', 1)
+        conf.Define('HAVE_PTHREAD', 1)
+
+    if conf.CheckLib("idn") and conf.CheckHeader("idna.h"):
+        conf.Define('IDN', 1)
+
+    if conf.CheckLib("fltk") and conf.CheckCXXHeader("FL/Fl.H"):
+        conf.Define('FLTK', 1)
+        buildControlGui = True
+
+    if conf.CheckFunc("regcomp"):
+        conf.Define('REGCOMP', 1)
+        conf.Define('REGEX', 1)
+
+    if conf.CheckFunc("pipe"):
+        conf.Define('PIPE', 1)
+
+    if conf.CheckFunc("event_loopbreak", header="event.h"):
+        conf.Define('EVENT_LOOPBREAK', 1)
+
+    if conf.CheckFunc("compressBound"):
+        conf.Define('GZIP_CHECK_BOUNDS', 1)
+
+    if conf.CheckFunc("gettimeofday"):
+        conf.Define('GETTIMEOFDAY', 1)
+
+    if conf.CheckFunc("snprintf"):
+        conf.Define('SNPRINTF', 1)
+
+    if conf.CheckFunc("localtime_r"):
+        conf.Define('LOCALTIME_R', 1)
+
+    if conf.CheckHeader("sys/sendfile.h"):
+        conf.Define('HAVE_SYS_SENDFILE_H', 1)
+
+    if conf.CheckFunc("setgroups"):
+        conf.Define('SETGROUPS', 1)
+
+    if conf.CheckLib("dl"):
+        conf.Define('DL', 1)
+        conf.Define('HAVE_DL', 1)
+        buildMscgiExamples = True
+
+    if conf.CheckFunc("dlopen"):
+        conf.Define('DLOPEN', 1)
+
+    if conf.CheckHeader("stdint.h"):
+        conf.Define('STDINT_H', 1)
+
+    if conf.CheckHeader("stdlib.h"):
+        conf.Define('STDLIB_H', 1)
+
+    if conf.CheckHeader("inttypes.h"):
+        conf.Define('INTTYPES_H', 1)
+
+    if conf.CheckHeader("strings.h"):
+        conf.Define('STRINGS_H', 1)
+
+    if conf.CheckHeader("string.h"):
+        conf.Define('STRING_H', 1)
+
+    if conf.CheckHeader("sys/stat.h"):
+    	conf.Define('SYS_STAT_H', 1)
+
+    if conf.CheckLib('xnet'):
+        conf.Define('XNET_LIB', 1)
+
+    if conf.CheckHeader("sys/types.h"):
+        conf.Define('SYS_TYPES_H', 1)
+
+    if conf.CheckHeader("unistd.h"):
+        conf.Define('UNISTD_H', 1)
+
+    if conf.CheckHeader("grp.h"):
+        conf.Define('HAVE_GRP_H', 1)
+
+    if conf.CheckHeader("dlfcn.h"):
+        conf.Define('DLFCN_H', 1)
+
+    if conf.TryCompile("""#include <sys/types.h>
+                       #include <sys/socket.h>
+                       main()
+                       {
+                        if (socket(AF_INET6, SOCK_STREAM, 0) < 0)
+                          exit(1);
+                        else
+                          exit(0);
+                       }""", ".c"):
+        conf.Define('IPV6', 1)
+
+
+    if conf.CheckLib("cppunit"):
+        doTests = True
+
+    env = conf.Finish()
+
+files = get_cpp_files('src')
+files.sort()
+
+if command == "build":
+    env.Program('binaries/myserver', files)
+
+
+#Build the Control GUI here.
+if buildControlGui:
+    filesControl = glob.glob('control/*.cpp')
+    filesControl.append(["src/base/file/file.cpp", "src/base/file/files_utility.cpp", "src/base/xml/xml_parser.cpp", 
+                  "src/base/utility.cpp", "src/base/find_data/find_data.cpp", "src/base/md5/md5.cpp", "src/base/mem_buff/mem_buff.cpp",
+                  "src/base/socket/ssl_socket.cpp", "src/base/socket/socket.cpp",  "src/base/sync/mutex.cpp", 
+                  "src/base/thread/thread.cpp", "src/filter/stream.cpp", "src/base/string/securestr.cpp"])
+
+    filesControl.sort()
+
+    if command == "build":
+        env.Program('binaries/control', filesControl)
+
+#Build the MSCGI examples here.
+if buildMscgiExamples:
+    envMscgi = env.Clone(SHLIBSUFFIX=".mscgi", SHLIBPREFIX="")
+
+    if command == "build":
+        envMscgi.SharedLibrary('binaries/web/cgi-bin/post', ["binaries/web/cgi-src/post/post.cpp"])
+        envMscgi.SharedLibrary('binaries/web/cgi-bin/math_sum', ["binaries/web/cgi-src/math_sum/math_sum.cpp"])
+
+#Compile and run the tests suite.
+if command == "build":
+    testsFiles = glob.glob('tests/*.cpp') + files
+    testsFiles.remove('src/myserver.cpp')
+    testsFiles.sort()
+    t = env.Program('tests/test_suite', testsFiles)
+
+if command == "tests":
+    AddPostAction('tests/tests_suite', env.Execute('tests/tests_suite'))
+
+
+#Copy the files to the right position.
+if command == "install" or command == "package":
+    env.Install(destdir, "binaries/myserver binaries/myserver-configure binaries/myserver-daemon ".split())
+    env.Install(destdir, glob.glob("binaries/*.default"))
+    env.Install(destdir, "binaries/readme.txt COPYING INSTALL NEWS README TODO".split())
+    env.Install(destdir + "/web",  glob.glob("binaries/web/*.html"))
+    env.Install(destdir + "/web",  glob.glob("binaries/web/*.png"))
+    env.Install(destdir + "/certificates",  glob.glob("binaries/certificates/*.txt"))
+    env.Install(destdir + "/system",  ["binaries/system/security"])
+    env.Install(destdir + "/system/css", glob.glob("binaries/system/*.css"))
+    env.Install(destdir + "/system/errors", glob.glob("binaries/system/errors/*.html"))
+    env.Install(destdir + "/system/icons/codes", glob.glob("binaries/system/icons/codes/*.png"))
+    env.Install(destdir + "/languages", glob.glob("binaries/languages/*.xml"))
+    env.Install(destdir + "/languages/configure", glob.glob("binaries/languages/configure/*.xml"))
+    env.Install(destdir + "/web/cgi-bin", glob.glob("binaries/web/cgi-bin/*.html"))
+    env.Install(destdir + "/web/cgi-bin", glob.glob("binaries/web/cgi-bin/*.readme"))
+    env.Install(destdir + "/web/cgi-bin", glob.glob("binaries/web/cgi-bin/*.mscgi"))
+    env.Install(destdir + "/web/logs", glob.glob("binaries/web/cgi-bin/.keepme"))
+    env.Install(destdir + "/documentation/english", glob.glob("documentation/english/index.htm"))
+    env.Install(destdir + "/documentation/english/texts", glob.glob("documentation/english/texts/*.htm"))
+    env.Install(destdir + "/documentation/english/style", glob.glob("documentation/english/style/*.css"))
+    env.Install(destdir + "/documentation/english/images", glob.glob("documentation/english/images/*.jpg"))
+
+    #Prepare the package.
+    if command == "package":
+        filename = MYSERVER_VERSION.lower() + ".tar.gz"
+        env = Environment(TARFLAGS = '-c -z')
+        env.Tar(ddir + "/" + filename, destdir)
+
+        Execute(Delete(destdir))
+
+def get_plugin(name):
+    print "getting plugin " + name
+    if len(glob.glob("binaries/plugins/" + name)) == 0:
+        Execute("git clone " + GIT_LOCATION)
+
+    doc = xml.dom.minidom.parse("plugins/binaries/plugins/" + name + "/plugin.xml")
+
+    deps = doc.getElementsByTagName("DEPENDS")
+    
+    for node in deps:
+        print "checking dependencies"
+        dep = ""
+        for node2 in node.childNodes:
+            if node2.nodeType == Node.TEXT_NODE:
+                dep += node2.data
+
+        dep = dep.replace('::', '/')
+        
+        get_plugin(dep)
+
+        build_plugin(name)
+
+
+def build_plugin(name):
+    SConscript(["binaries/plugins/" + name + "/SConscript"])
+
+
+
+# Retrieve the plugin and build it.
+if command == "get_plugin":
+    get_plugin(plugin)
+
+
+# Build a plugin.
+if command == "build_plugin":
+    build_plugin(plugin)

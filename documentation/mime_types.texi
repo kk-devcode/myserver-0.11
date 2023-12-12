@@ -1,0 +1,177 @@
+@c -*-texinfo-*-
+@c GNU MyServer
+@c
+@c Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+@c 2011 Free Software Foundation, Inc.
+@c
+@c This program is free software; you can redistribute it and/or modify
+@c it under the terms of the GNU General Public License as published by
+@c the Free Software Foundation; either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c This program is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with this program.  If not, see <http://www.gnu.org/licenses/>.
+MIME types are used to specify the type of information a resource
+transmitted to or from the server contains.
+Some standard MIME types are already defined in the
+@file{MIMEtypes.xml} file.
+Using the same syntax you can define new MIME types or modify existing
+ones.  For each MIME type it is possible to specify how the server
+will handle the files and which actions take before it can be sent to
+the client.
+
+In this example two MIME types are defined:
+
+@example
+<MIME mime="text/html" handler="SEND" param="">
+      <EXTENSION value="html"/>
+      <FILTER value="gzip"/>
+</MIME>
+
+<MIME mime="text/html" handler="CGI" param="/usr/bin/perl" selfExecuted="NO">
+      <EXTENSION value="pl"/>
+      <DEFINE name="http.error.file.404" value="404.html"/>
+</MIME>
+@end example
+
+The former defines to send any file with a @code{.html} extension as
+it is, in case it is supported by the client then the file content is
+compressed using the gzip.
+The latter specifies that every file with a @code{pl} extension are
+handled by the @file{/usr/bin/perl} CGI and the new process standard
+output is redirected to the client.  In addition, it defines which
+resource use when a 404 HTTP file not found error happens.
+
+Every MIME type is made of:
+
+@itemize
+
+@item mime
+the MIME attribute specifies the MIME name.
+
+@item extension
+the MIME type will be used by any file with this extension.  More
+@code{extension} items can be specified for the same MIME type.
+
+@item filter
+this directive registers a filter to use on the MIME type.  It depends
+from the protocol how it will be handled, a protocol may ignore this
+directive.  For example HTTP will use a modifier filter only if it is
+accepted by the client.
+
+@item handler
+specifies how the server will manage this file.  It is protocol
+specific, for example, FTP doesn't support it.
+
+@item param
+specifies additional params for the handler.
+
+@item selfExecuted
+where it is supported, lanuch the accessed resource as a process or a
+server.
+For example, there is need to use selfExecuted on the CGI protocol if
+the accessed resource can be used as a process.  Differently if it is
+not specified, the resource mapped by the URI will be used as an
+additional argument to @code{param}.
+@end itemize
+
+@code{<FILTER>} defines a filter for the MIME type.  The data will
+pass through the filter before being sent to the user.  
+In the example above, the data would be sent gzipped to the user.
+It is possible to specify multiple filters for the same MIME type,
+they will be applied in the specified order.
+
+@code{<DEFINE>} It defines a new value for a variable, take a look
+here @ref{Security files} for more details on the @code{<DEFINE>}
+element.
+
+The same MIME type can have several extensions, you will need to
+specify a different @code{<EXTENSION>} element for each extension.
+
+These are valid HTTP handlers:
+
+@enumerate
+@item SEND
+Send the file statically as it is.  This command is used for files
+extensions such as .html and .jpg that don't need any external
+intervention from the web server.
+@item CGI
+Run the CGI script indicated in the handler.  It is used for file
+extensions such as .php and .pl that need to be processed before
+sending any data to the client.  Every request requires the execution
+of a new process.
+@item FASTCGI
+Run the script using the FastCGI server specified in the handler.
+Differently than CGI, a new process is not spawned on every request
+but it is done opening a connection to the specified FastCGI server.
+@item SCGI
+Like FastCGI, it is designed as a replacement for the CGI protocol.
+@item MSCGI
+Run the MSCGI script. This library is only available for MyServer. It
+is used to build fast and efficient CGIs that needs to access MyServer
+internal data.  It is not portable, don't use unless you are going to
+write something that can be used only for MyServer.
+@item ISAPI
+Run the ISAPI module.  It is available only under the Microsoft
+Windows operating system thus it is not portable or can be used on a
+Free operating system.
+@item WINCGI
+This protocol is obsoleted by ISAPI.  As CGI it needs a new process
+for every request and it uses files to communicate with the web
+server.  It is very inefficient.
+@item PROXY
+The HTTP request is forwarded to the HTTP server specified in the
+@code{param}.  This is not a real proxy, there is not caching and
+message is forwarded as it is without any change.
+@end enumerate
+
+It is possible to match the file name against a regular expression
+instead of specifying only its extension.
+
+It is done using the @code{PATH} directive in the following way:
+
+@example
+<?xml version ="1.0"?>
+<MIME mime="text/html" handler="SEND" param="">
+<PATH regex="/foo/bar/.*" />
+</MIME>
+@end example
+
+The @code{PATH} regular expressions are checked before the file
+extension, in the order they are specified in the configuration file.
+
+The proxy handler can keep a pool of active connections to the most
+recent used websites in order to make new requests faster.
+The maximum number of active connections that the server should
+maintain, can be configured trough the global variable
+@code{http.proxy.connections.keepalive}.
+
+@section Symbolic links
+MyServer offers the feature to follow symlinks where they are
+supported.
+You can configure MyServer to follow symbolic links specifying this
+line in the @file{myserver.xml} file.
+
+@example
+	<DEFINE name="symlinks.follow" value="YES" />
+@end example
+
+By default MyServer doesn't follow symbolic links.  Symbolic links are
+still followed when they are not the last component of the path.
+
+@section Different MIME type handlers
+It is possible to use different handlers to determine the file MIME
+type.  Additional handlers can be supported by external plugins.
+
+The definition of external handlers can be done per vhost or globally
+in the main configuration file changing the value of the variable
+@code{mime.handler}.
+
+@example
+	<DEFINE name="mime.handler" value="mime_magic" />
+@end example
